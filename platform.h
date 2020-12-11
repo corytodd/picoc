@@ -19,7 +19,7 @@
 #elif defined(WIN32) /*(predefined on MSVC)*/
 #include "platform/platform_msvc.h"
 #else
-#include "platform_port.h"
+#include "picoc/platform_port.h"
 #endif
 
 #ifndef PICO_SIZEOF_FILE
