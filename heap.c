@@ -45,7 +45,7 @@ void HeapInit(Picoc *pc, int StackOrHeapSize)
 
 void HeapCleanup(Picoc *pc)
 {
-    free(pc->HeapMemory);
+    PICOC_FREE(pc->HeapMemory);
 }
 
 /* allocate some space on the stack, in the current stack frame
