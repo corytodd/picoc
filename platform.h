@@ -25,8 +25,8 @@
 #include "platform_port.h"
 #endif
 
-#ifndef SIZEOF_FILE
-#define SIZEOF_FILE sizeof(FILE)
+#ifndef PICO_SIZEOF_FILE
+#define PICO_SIZEOF_FILE sizeof(FILE)
 #endif
 
 #ifndef PICOC_MALLOC
@@ -47,18 +47,6 @@
 
 #ifndef PATH_MAX
 #define PATH_MAX 255
-#endif
-
-/* configurable options */
-/* select your host type (or do it in the Makefile):
- #define UNIX_HOST
- #define DEBUGGER
- #define USE_READLINE (defined by default for UNIX_HOST)
- */
-#define USE_READLINE
-
-#if defined(WIN32) /*(predefined on MSVC)*/
-#undef USE_READLINE
 #endif
 
 /* undocumented, but probably useful */

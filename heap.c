@@ -23,8 +23,9 @@ void HeapInit(Picoc *pc, int StackOrHeapSize)
 {
     int Count;
     int AlignOffset = 0;
-
-    pc->HeapMemory = malloc(StackOrHeapSize);
+    
+    pc->HeapMemorySize = StackOrHeapSize;
+    pc->HeapMemory = PICOC_MALLOC(StackOrHeapSize);
     pc->HeapBottom = NULL;  /* the bottom of the (downward-growing) heap */
     pc->StackFrame = NULL;  /* the current stack frame */
     pc->HeapStackTop = NULL;  /* the top of the stack */
@@ -124,12 +125,12 @@ int HeapPopStackFrame(Picoc *pc)
     can return NULL if out of memory */
 void *HeapAllocMem(Picoc *pc, int Size)
 {
-    return calloc(Size, 1);
+    return PICOC_CALLOC(Size, 1);
 }
 
 /* free some dynamically allocated memory */
 void HeapFreeMem(Picoc *pc, void *Mem)
 {
-    free(Mem);
+    PICOC_FREE(Mem);
 }
 

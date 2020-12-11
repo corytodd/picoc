@@ -1,5 +1,7 @@
 /*  */
+#ifdef PICOC_SUPPORT_FCNTL
 #include <fcntl.h>
+#endif
 #include <limits.h>
 
 #include "../interpreter.h"

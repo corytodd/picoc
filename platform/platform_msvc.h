@@ -1,1 +1,2 @@
 #define SUPPORT_FCNTL
+#undef USE_READLINE

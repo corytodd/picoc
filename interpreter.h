@@ -453,6 +453,7 @@ struct Picoc_Struct {
     struct IncludeLibrary *IncludeLibList;
 
     /* heap memory */
+    int HeapMemorySize;         /* size of heap in byte */
     unsigned char *HeapMemory;  /* stack memory since our heap is malloc()ed */
     void *HeapBottom;           /* the bottom of the (downward-growing) heap */
     void *StackFrame;           /* the current stack frame */
@@ -494,7 +495,9 @@ struct Picoc_Struct {
     int LittleEndian;
 
     IOFILE *CStdOut;
-    IOFILE CStdOutBase;
+    
+    // TODO CAT not sure what to do about this incomplete type
+    // IOFILE CStdOutBase;
 
     /* the picoc version string */
     const char *VersionString;
