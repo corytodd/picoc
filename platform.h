@@ -14,13 +14,16 @@
 #include <math.h>
 #include <stdbool.h>
 
+#define PICOC_NO_STRPTIME
+
 /* host platform includes */
 #ifdef UNIX_HOST
-# include <stdint.h>
-# include <unistd.h>
+#include "platform/platform_unix.h"
 #elif defined(WIN32) /*(predefined on MSVC)*/
+#include "platform/platform_msvc.h"
 #else
-# error ***** A platform must be explicitly defined! *****
+#include "platform_port.h"
+#endif
 #endif
 
 
