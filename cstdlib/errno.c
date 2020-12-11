@@ -69,7 +69,12 @@ static int EDESTADDRREQValue = EDESTADDRREQ;
 #endif
 
 #ifdef EDOM
-static int EDOMValue = EDOM;
+    // https://developer.arm.com/documentation/ihi0039/e/?lang=en#errno-h
+    #if defined(__ARM_EABI__)
+    static int EDOMValue = 33;
+    #else
+    static int EDOMValue = EDOM;
+    #endif
 #endif
 
 #ifdef EDQUOT
@@ -97,7 +102,12 @@ static int EIDRMValue = EIDRM;
 #endif
 
 #ifdef EILSEQ
-static int EILSEQValue = EILSEQ;
+    // https://developer.arm.com/documentation/ihi0039/e/?lang=en#errno-h
+    #if defined(__ARM_EABI__)
+    static int EILSEQValue = 47;
+    #else
+    static int EILSEQValue = EILSEQ;
+    #endif
 #endif
 
 #ifdef EINPROGRESS
@@ -285,7 +295,12 @@ static int EPROTOTYPEValue = EPROTOTYPE;
 #endif
 
 #ifdef ERANGE
-static int ERANGEValue = ERANGE;
+    // https://developer.arm.com/documentation/ihi0039/e/?lang=en#errno-h
+    #if defined(__ARM_EABI__)
+    static int ERANGEValue = 34;
+    #else
+    static int ERANGEValue = ERANGE;
+    #endif
 #endif
 
 #ifdef EROFS
