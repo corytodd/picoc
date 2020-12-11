@@ -24,8 +24,30 @@
 #else
 #include "platform_port.h"
 #endif
+
+#ifndef SIZEOF_FILE
+#define SIZEOF_FILE sizeof(FILE)
 #endif
 
+#ifndef PICOC_MALLOC
+#define PICOC_MALLOC malloc
+#endif
+
+#ifndef PICOC_CALLOC
+#define PICOC_CALLOC calloc
+#endif
+
+#ifndef PICOC_REALLOC
+#define PICOC_REALLOC realloc
+#endif
+
+#ifndef PICOC_FREE
+#define PICOC_FREE free
+#endif
+
+#ifndef PATH_MAX
+#define PATH_MAX 255
+#endif
 
 /* configurable options */
 /* select your host type (or do it in the Makefile):
