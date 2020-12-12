@@ -29,15 +29,15 @@ if(UNIX)
     set(${LIBRARY_TARGET_NAME}_SRC
             ${${LIBRARY_TARGET_NAME}_SRC}
             src/cstdlib/picoc_unistd.c
-            src/library_unix.c
-            src/platform_unix.c
+            src/platform/library_unix.c
+            src/platform/platform_unix.c
             )
 elseif(MSVC)
     message(STATUS "Building for Windows host")
     set(${LIBRARY_TARGET_NAME}_SRC
             ${${LIBRARY_TARGET_NAME}_SRC}
-            src/library_msvc.c
-            src/platform_msvc.c
+            src/platform/library_msvc.c
+            src/platform/platform_msvc.c
             )
 else()
     message(STATUS "No platform set")
