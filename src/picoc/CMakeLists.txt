@@ -52,7 +52,8 @@ set(${LIBRARY_TARGET_NAME}_HDR_PUBLIC
         include/picoc/platform/platform_unix.h
         )
 
-configure_file(../picocli/Config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/picoc/config.h)
+configure_file(Config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/picoc/config.h)
+add_definitions( -DPICOC_VERSION="${PROJECT_VERSION}")
 
 # Dependencies --------------------------------------------------------------
 include_directories(

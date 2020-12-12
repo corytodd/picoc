@@ -10,14 +10,6 @@
 extern "C" {
 #endif
 
-#ifdef PROJECT_VER
-#define PICOC_VERSION PROJECT_VER
-#else
-#define PICOC_VERSION "UNKNOWN"
-#endif
-
-#define PICOC_EXPORT_CALL PICOCAPI_EXPORT PICOCAPI_CALL /**< API export and call macro*/
-
 #include "picoc/picoc_interpreter.h"
 
 /* this has to be a macro, otherwise errors will occur due to
