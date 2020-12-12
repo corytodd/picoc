@@ -14,6 +14,7 @@
 #define NULL 0
 #endif
 
+#define PICOC_MIN(A, B) ((A) < (B)) ? (A) : (B)
 #define MEM_ALIGN(x) (((x) + sizeof(ALIGN_TYPE)-1) & ~(sizeof(ALIGN_TYPE)-1))
 
 /* for debugging */

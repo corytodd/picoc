@@ -4,6 +4,7 @@
 #include "picoc/picoc_picoc.h"
 #include "picoc/picoc_interpreter.h"
 
+#include "picoc/config.h"
 
 static void PrintSourceTextErrorLine(IOFILE *Stream, const char *FileName,
         const char *SourceText, int Line, int CharacterPos);
@@ -272,4 +273,10 @@ char *PlatformMakeTempName(Picoc *pc, char *TempNameBuffer)
     }
 
     return TableStrRegister(pc, TempNameBuffer);
+}
+
+void PicocVersion(char* pVersion, int maxLen) {
+  size_t len = PICOC_MIN(strlen(pVersion), strlen(PROJECT_VER));
+  memcpy(pVersion, PROJECT_VER, len);
+  pVersion[maxLen-1] = '\0';
 }

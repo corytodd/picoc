@@ -1,1 +1,2 @@
 add_subdirectory(picoc)
+add_subdirectory(picocli)

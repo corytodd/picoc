@@ -23,9 +23,10 @@ printf("%d\n", strncmp(a, "goere", 2) == 0);
 printf("%d\n", strncmp(a, "goerg", 2) == 0);
 printf("%d\n", strncmp(a, "zebra", 2) < 0);
 
-printf("%s\n", index(a, 'o'));
-printf("%s\n", rindex(a, 'l'));
-printf("%d\n", rindex(a, 'x') == NULL);
+// TODO selectively enable for non-windows tests
+//printf("%s\n", index(a, 'o'));
+//printf("%s\n", rindex(a, 'l'));
+//printf("%d\n", rindex(a, 'x') == NULL);
 
 memset(&a[1], 'r', 4);
 printf("%s\n", a);
