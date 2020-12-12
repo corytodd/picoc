@@ -1,15 +1,15 @@
-/* picoc external interface. This should be the only header you need to use if
- * you're using picoc as a library. Internal details are in interpreter.h */
-#ifndef PICOC_H
-#define PICOC_H
+/**
+ * @file picoc_picoc.h
+ * @details
+ * picoc external interface. This should be the only header you need to use if
+ * you're using picoc as a library. Internal details are in interpreter.h
+ */
+#pragma once
 
-
-/* picoc version number */
-#ifdef VER
-/* VER, the git hash number, and TAG are obtained via the Makefile */
-#define PICOC_VERSION TAG " r" VER
+#ifdef PROJECT_VER
+#define PICOC_VERSION PROJECT_VER
 #else
-#define PICOC_VERSION "v2.3.2"
+#define PICOC_VERSION "UNKNOWN"
 #endif
 
 #include "picoc/picoc_interpreter.h"
@@ -32,5 +32,3 @@ extern void PicocPlatformScanFile(Picoc *pc, const char *FileName);
 
 /* include.c */
 extern void PicocIncludeAllSystemHeaders(Picoc *pc);
-
-#endif /* PICOC_H */

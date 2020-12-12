@@ -1,6 +1,10 @@
-/* all platform-specific includes and defines go in this file */
-#ifndef PLATFORM_H
-#define PLATFORM_H
+/**
+ * @file picoc_platform.h
+ * @details
+ * Loads defaults and platform specific configurations
+ */
+
+#pragma once
 
 #include <ctype.h>
 #include <assert.h>
@@ -11,9 +15,9 @@
 #include <math.h>
 #include <stdbool.h>
 
+//! Disable strptime function unless your platform wants it
 #define PICOC_NO_STRPTIME
 
-/* host platform includes */
 #ifdef UNIX_HOST
 #include "picoc/platform/platform_unix.h"
 #elif defined(WIN32) /*(predefined on MSVC)*/
@@ -23,22 +27,27 @@
 #endif
 
 #ifndef PICO_SIZEOF_FILE
+//! If your platform has an opaque FILE type, specify the size in your platform include
 #define PICO_SIZEOF_FILE sizeof(FILE)
 #endif
 
 #ifndef PICOC_MALLOC
+//! Override in platform_xxx.h
 #define PICOC_MALLOC malloc
 #endif
 
 #ifndef PICOC_CALLOC
+//! Override in platform_xxx.h
 #define PICOC_CALLOC calloc
 #endif
 
 #ifndef PICOC_REALLOC
+//! Override in platform_xxx.h
 #define PICOC_REALLOC realloc
 #endif
 
 #ifndef PICOC_FREE
+//! Override in platform_xxx.h
 #define PICOC_FREE free
 #endif
 
@@ -46,14 +55,13 @@
 #define PATH_MAX 255
 #endif
 
-/* undocumented, but probably useful */
+// TODO("CAT", "Rename all debugging defines")
 #undef DEBUG_HEAP
 #undef DEBUG_EXPRESSIONS
 #undef FANCY_ERROR_MESSAGES
 #undef DEBUG_ARRAY_INITIALIZER
 #undef DEBUG_LEXER
 #undef DEBUG_VAR_SCOPE
-
 
 #if defined(__hppa__) || defined(__sparc__)
 /* the default data type to use for alignment */
@@ -63,6 +71,7 @@
 #define ALIGN_TYPE void*
 #endif
 
+// TODO("CAT", "Rename all global size config defines")
 #define GLOBAL_TABLE_SIZE (97)                /* global variable table */
 #define STRING_TABLE_SIZE (97)                /* shared string table size */
 #define STRING_LITERAL_TABLE_SIZE (97)        /* string literal table size */
@@ -77,5 +86,3 @@
 #define INTERACTIVE_PROMPT_LINE "     > "
 
 extern jmp_buf ExitBuf;
-
-#endif /* PLATFORM_H */

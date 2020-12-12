@@ -1,3 +1,10 @@
+/**
+ * @file platform_unix.h
+ * @details
+ * Sane Unix defaults
+ */
+#pragma once
+
 #include <stdint.h>
 #include <unistd.h>
 
@@ -5,7 +12,5 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PICOC_SUPPORT_FCNTL
+//! Yes, we want strptime
 #undef PICOC_NO_STRPTIME
-
-#define USE_READLINE

@@ -1,15 +1,13 @@
-/* picoc main program - this varies depending on your operating system and
- * how you're using picoc */
-/* platform-dependent code for running programs is in this file */
-
-/* include only picoc.h here - should be able to use it with only the
-    external interfaces, no internals from interpreter.h */
-#include "picoc/picoc_picoc.h"
-
-
+/**
+ * @file main.c
+ * @details
+ * Program entry point.
+ */
 #if defined(UNIX_HOST) || defined(WIN32)
-#include "picoc/picoc_license.h"
 #include "picoc/config.h"
+
+#include "picoc/picoc_picoc.h"
+#include "picoc/picoc_license.h"
 
 /* Override via STACKSIZE environment variable */
 #define PICOC_STACK_SIZE (128000*4)
@@ -54,11 +52,13 @@ int main(int argc, char **argv)
             return pc.PicocExitValue;
         }
 
-        for (; ParamCount < argc && strcmp(argv[ParamCount], "-") != 0; ParamCount++)
-            PicocPlatformScanFile(&pc, argv[ParamCount]);
+        for (; ParamCount < argc && strcmp(argv[ParamCount], "-") != 0; ParamCount++) {
+          PicocPlatformScanFile(&pc, argv[ParamCount]);
+        }
 
-        if (!DontRunMain)
-            PicocCallMain(&pc, argc - ParamCount, &argv[ParamCount]);
+        if (!DontRunMain) {
+          PicocCallMain(&pc, argc - ParamCount, &argv[ParamCount]);
+        }
     }
 
     PicocCleanup(&pc);
