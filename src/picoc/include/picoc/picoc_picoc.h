@@ -6,11 +6,17 @@
  */
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef PROJECT_VER
 #define PICOC_VERSION PROJECT_VER
 #else
 #define PICOC_VERSION "UNKNOWN"
 #endif
+
+#define PICOC_EXPORT_CALL PICOCAPI_EXPORT PICOCAPI_CALL /**< API export and call macro*/
 
 #include "picoc/picoc_interpreter.h"
 
@@ -33,3 +39,7 @@ extern void PicocPlatformScanFile(Picoc *pc, const char *FileName);
 
 /* include.c */
 extern void PicocIncludeAllSystemHeaders(Picoc *pc);
+
+#ifdef __cplusplus
+}
+#endif

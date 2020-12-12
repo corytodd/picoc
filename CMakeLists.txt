@@ -4,6 +4,7 @@ project(picoc
         LANGUAGES C CXX # CXX for gtest
         # major.minor.patch/revision.tweak
         VERSION 4.0.0.0)
+set (CMAKE_CXX_STANDARD 17)
 
 include(GNUInstallDirs)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -15,7 +16,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}"
 
 # Options -------------------------------------------------------------------------
 option(BUILD_SHARED_LIBS "Build libraries as shared as opposed to static" OFF)
-option(BUILD_TESTING "Create tests using CMake" OFF)
+option(BUILD_TESTING "Create tests using CMake" ON)
 
 # Cross compat --------------------------------------------------------------------
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

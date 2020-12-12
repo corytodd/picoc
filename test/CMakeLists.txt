@@ -32,15 +32,39 @@ if (MSVC)
     add_compile_options("/wd4068")
 endif(MSVC)
 
+set(GEN_FILE GeneratedTests.hpp)
+ADD_CUSTOM_COMMAND(
+        OUTPUT GeneratedTests.hpp
+        COMMAND generator ${GEN_FILE}
+        DEPENDS generator
+        COMMENT "Generating Tiger Grammar"
+)
+
+add_executable(
+        generator
+        src/generator.cpp
+)
+
 add_executable(
         ${TEST_MODULE}
         src/main.cpp
+        src/runner.cpp
+        ${GEN_FILE}
 )
 
 target_link_libraries(
-        ${TEST_MODULE}
+        ${TEST_MODULE} PRIVATE
+        picoc::picoc
         gtest_main
 )
+
+add_custom_target(copy-files ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/test_data
+        ${CMAKE_CURRENT_BINARY_DIR}/test_data
+        )
+add_dependencies(${TEST_MODULE} copy-files)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include(CTest)
 enable_testing()
