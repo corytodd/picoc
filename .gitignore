@@ -1,11 +1,9 @@
-
 *.a
 *.o
 *.obj
 *.def
 *.pdb
 *.exp
-picoc
 build/*
 archives/
 .vscode/
