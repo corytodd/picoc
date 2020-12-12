@@ -18,9 +18,9 @@
 //! Disable strptime function unless your platform wants it
 #define PICOC_NO_STRPTIME
 
-#ifdef UNIX_HOST
+#if defined(__unix) || defined(__unix__)
 #include "picoc/platform/platform_unix.h"
-#elif defined(WIN32) /*(predefined on MSVC)*/
+#elif defined(_WIN32) /*(predefined on MSVC)*/
 #include "picoc/platform/platform_msvc.h"
 #else
 #include "picoc/platform_port.h"

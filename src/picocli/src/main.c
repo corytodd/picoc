@@ -3,8 +3,6 @@
  * @details
  * Program entry point.
  */
-#if defined(UNIX_HOST) || defined(WIN32)
-#include "picoc/config.h"
 
 #include "picoc/picoc_picoc.h"
 #include "picoc/picoc_license.h"
@@ -14,19 +12,22 @@
 
 int main(int argc, char **argv)
 {
+    char version[20] = {0};
+    PicocVersion(version, sizeof(version));
+
     int ParamCount = 1;
     int DontRunMain = false;
     int StackSize = getenv("STACKSIZE") ? atoi(getenv("STACKSIZE")) : PICOC_STACK_SIZE;
     Picoc pc;
 
     if (argc < 2 || strcmp(argv[ParamCount], "-h") == 0) {
-        printf(PROJECT_VER "  \n"
+        printf("%s \n"
                "Format:\n\n"
                "> picoc <file1.c>... [- <arg1>...]    : run a program, calls main() as the entry point\n"
                "> picoc -s <file1.c>... [- <arg1>...] : run a script, runs the program without calling main()\n"
                "> picoc -i                            : interactive mode, Ctrl+d to exit\n"
                "> picoc -c                            : copyright info\n"
-               "> picoc -h                            : this help message\n");
+               "> picoc -h                            : this help message\n", version);
         return 0;
     }
 
@@ -64,4 +65,3 @@ int main(int argc, char **argv)
     PicocCleanup(&pc);
     return pc.PicocExitValue;
 }
-#endif

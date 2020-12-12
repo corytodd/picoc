@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15.2)
 
 project(picoc
-        LANGUAGES C
+        LANGUAGES C CXX # CXX for gtest
         # major.minor.patch/revision.tweak
         VERSION 4.0.0.0)
 
@@ -14,6 +14,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}"
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
 # Options -------------------------------------------------------------------------
+option(BUILD_SHARED_LIBS "Build libraries as shared as opposed to static" OFF)
 option(BUILD_TESTING "Create tests using CMake" OFF)
 
 # Cross compat --------------------------------------------------------------------
@@ -25,5 +26,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(src)
 
 if(BUILD_TESTING)
-    add_subdirectory(tests)
+    add_subdirectory(test)
 endif()

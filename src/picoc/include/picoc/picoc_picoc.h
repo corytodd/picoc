@@ -18,6 +18,7 @@
 	the stack being corrupt */
 #define PicocPlatformSetExitPoint(pc) setjmp((pc)->PicocExitBuf)
 
+extern void PicocVersion(char* pVersion, int maxLen);
 
 /* parse.c */
 extern void PicocParse(Picoc *pc, const char *FileName, const char *Source,
