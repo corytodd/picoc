@@ -1,7 +1,7 @@
 #include "picoc/picoc_picoc.h"
 #include "picoc/picoc_interpreter.h"
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 static int gEnableDebugger = true;
 #else
 static int gEnableDebugger = false;

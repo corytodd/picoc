@@ -6,7 +6,7 @@
 #include <readline/history.h>
 #endif
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 static int gEnableDebugger = true;
 #else
 static int gEnableDebugger = false;
@@ -15,7 +15,7 @@ static int gEnableDebugger = false;
 /* mark where to end the program for platforms which require this */
 jmp_buf PicocExitBuf;
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 #include <signal.h>
 
 Picoc *break_pc = NULL;

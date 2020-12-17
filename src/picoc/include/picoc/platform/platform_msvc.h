@@ -24,4 +24,4 @@
 #define PICOC_FN_REALLOC realloc
 #define PICOC_FN_FREE free
 
-#define PICO_SIZEOF_FILE sizeof(FILE)
+#define PICOC_SIZEOF_FILE sizeof(FILE)

@@ -11,7 +11,7 @@
  *
  * Required features
  **********************************************************/
-#undef PICO_SIZEOF_FILE
+#undef PICOC_SIZEOF_FILE
 
 //! void* malloc(size_t size)
 #undef PICOC_FN_MALLOC
@@ -83,7 +83,7 @@
 #include "picoc/platform_port.h"
 #endif
 
-#ifndef PICO_SIZEOF_FILE
+#ifndef PICOC_SIZEOF_FILE
 #error "PICO_SIZEOF_FILE not defined in platform_xxx.h"
 #endif
 
@@ -110,6 +110,9 @@
 /***********************************************************
  * Debug Features
  **********************************************************/
+
+//! Enable embedded debugger (experimental)
+#undef PICOC_DEBUGGER_ENABLE
 
 //! Debug heap allocator
 #undef PICOC_DEBUG_HEAP

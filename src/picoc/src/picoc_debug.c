@@ -3,7 +3,7 @@
 
 #define BREAKPOINT_HASH(p) (((unsigned long)(p)->FileName) ^ (((p)->Line << 16) | ((p)->CharacterPos << 16)))
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 /* initialize the debugger by clearing the breakpoint table */
 void DebugInit(Picoc *pc)
 {
@@ -124,4 +124,4 @@ void DebugCheckStatement(struct ParseState *Parser)
 void DebugStep(void)
 {
 }
-#endif /* DEBUGGER */
+#endif /* PICOC_DEBUGGER_ENABLE */

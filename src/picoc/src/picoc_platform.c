@@ -9,7 +9,7 @@
 static void PrintSourceTextErrorLine(IOFILE *Stream, const char *FileName,
         const char *SourceText, int Line, int CharacterPos);
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 static int gEnableDebugger = true;
 #else
 static int gEnableDebugger = false;
@@ -30,7 +30,7 @@ void PicocInitialize(Picoc *pc, int StackSize)
     IncludeInit(pc);
     LibraryInit(pc);
     PlatformLibraryInit(pc);
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
     DebugInit(pc);
 #endif
 }
@@ -38,7 +38,7 @@ void PicocInitialize(Picoc *pc, int StackSize)
 /* free memory */
 void PicocCleanup(Picoc *pc)
 {
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
     DebugCleanup(pc);
 #endif
     IncludeCleanup(pc);
@@ -52,7 +52,7 @@ void PicocCleanup(Picoc *pc)
 }
 
 /* platform-dependent code for running programs */
-#if defined(UNIX_HOST) || defined(WIN32)
+#if defined(PICOC_HOST_UNIX) || defined(WIN32)
 
 #define CALL_MAIN_NO_ARGS_RETURN_VOID "main();"
 #define CALL_MAIN_WITH_ARGS_RETURN_VOID "main(__argc,__argv);"

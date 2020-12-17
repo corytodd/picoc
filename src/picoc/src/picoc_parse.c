@@ -17,7 +17,7 @@ static enum RunMode ParseBlock(struct ParseState *Parser, int AbsorbOpenBrace,
 static void ParseTypedef(struct ParseState *Parser);
 
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 static int gEnableDebugger = true;
 #else
 static int gEnableDebugger = false;
@@ -596,7 +596,7 @@ enum ParseResult ParseStatement(struct ParseState *Parser,
     struct Value *VarValue;
     struct ParseState PreState;
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
     /* if we're debugging, check for a breakpoint */
     if (Parser->DebugMode && Parser->Mode == RunModeRun)
         DebugCheckStatement(Parser);

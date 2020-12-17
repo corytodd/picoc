@@ -662,7 +662,7 @@ extern void IncludeFile(Picoc *pc, char *Filename);
 /* the following is defined in picoc.h:
  * void PicocIncludeAllSystemHeaders(); */
 
-#ifdef DEBUGGER
+#ifdef PICOC_DEBUGGER_ENABLE
 /* debug.c */
 extern void DebugInit(Picoc *pc);
 extern void DebugCleanup(Picoc *pc);
