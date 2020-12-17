@@ -4,7 +4,12 @@
 
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#else
 struct FILE;
+#endif
+
 typedef FILE IOFILE;
 
 /**
@@ -15,3 +20,7 @@ typedef struct {
   IOFILE* pStdin;  ///< Receives input
   IOFILE* pStderr; ///< Receives error outpout
 } picoc_io_t;
+
+#ifdef __cplusplus
+}
+#endif

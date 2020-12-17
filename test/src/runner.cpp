@@ -9,6 +9,10 @@
 
 /* Override via STACKSIZE environment variable */
 #define PICOC_STACK_SIZE (128000*4)
+#define PICOC_TEST_RESULT "test.result"
+#define PICOC_TEST_ERROR "test.err"
+#define PICOC_TEST_INPUT "test.in"
+
 /**
  * Run all test cases and compare stdout to expected output
  */
@@ -29,8 +33,20 @@ TEST(Runner, RunAllTests) {
     std::string expect = testData.second.second;
 
     int stackSize = getenv("STACKSIZE") ? atoi(getenv("STACKSIZE")) : PICOC_STACK_SIZE;
+    IOFILE* pStdout = fopen(PICOC_TEST_RESULT, "w");
+    IOFILE* pStdin = fopen(PICOC_TEST_INPUT, "w");
+    IOFILE* pStderr = fopen(PICOC_TEST_ERROR, "w");
+    ASSERT_TRUE(pStdout != NULL);
+    ASSERT_TRUE(pStdin != NULL);
+    ASSERT_TRUE(pStderr != NULL);
+
+    picoc_io_t io = {0};
+    io.pStdout = pStdout;
+    io.pStdin = pStdin;
+    io.pStderr = pStderr;
+
     Picoc pc;
-    PicocInitialize(&pc, stackSize);
+    PicocInitialize(&pc, stackSize, &io);
     PicocIncludeAllSystemHeaders(&pc);
 
     if (PicocPlatformSetExitPoint(&pc)) {
@@ -38,8 +54,10 @@ TEST(Runner, RunAllTests) {
       GTEST_FAIL() << " Failed to set exit point" << std::endl;
     }
 
-    freopen("test.txt", "w", stdout);
     PicocPlatformScanFile(&pc, script.c_str());
+
+    // Cleanup interpreter
+    PicocCleanup(&pc);
 
     // Read in expected string
     std::ifstream t(expect);
@@ -47,13 +65,10 @@ TEST(Runner, RunAllTests) {
                                std::istreambuf_iterator<char>());
 
     // Read in actual string
-    std::ifstream u("test.txt");
+    fclose(pStdout);
+    std::ifstream u(PICOC_TEST_RESULT);
     std::string actualResult((std::istreambuf_iterator<char>(u)),
                                std::istreambuf_iterator<char>());
-
-    // Cleanup interpreter
-    PicocCleanup(&pc);
-    remove("test.txt");
 
     ASSERT_EQ(expectedResult, actualResult) << testData.first << " Failed " << script;
   }
