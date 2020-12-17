@@ -28,6 +28,3 @@
 
 #define PICOC_SIZEOF_FILE sizeof(FILE)
 #define PICOC_NO_UNISTD
-
-//! Disable compiler warnings about unsafe functions
-#define _CRT_SECURE_NO_WARNINGS

@@ -33,6 +33,7 @@ if(UNIX)
             src/platform/platform_unix.c
             )
 elseif(MSVC)
+    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
     message(STATUS "Building for Windows host")
     set(${LIBRARY_TARGET_NAME}_SRC
             ${${LIBRARY_TARGET_NAME}_SRC}
