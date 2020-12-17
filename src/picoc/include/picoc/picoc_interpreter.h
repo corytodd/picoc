@@ -15,7 +15,7 @@
 #endif
 
 #define PICOC_MIN(A, B) ((A) < (B)) ? (A) : (B)
-#define MEM_ALIGN(x) (((x) + sizeof(ALIGN_TYPE)-1) & ~(sizeof(ALIGN_TYPE)-1))
+#define MEM_ALIGN(x) (((x) + sizeof(PICOC_ALIGN_TYPE)-1) & ~(sizeof(PICOC_ALIGN_TYPE)-1))
 
 /* for debugging */
 #define PRINT_SOURCE_POS() { \
@@ -317,7 +317,7 @@ struct StackFrame {
     struct Value **Parameter;               /* array of parameter values */
     int NumParams;                          /* the number of parameters */
     struct Table LocalTable;                /* the local variables and parameters */
-    struct TableEntry *LocalHashTable[LOCAL_TABLE_SIZE];
+    struct TableEntry *LocalHashTable[PICOC_CONFIG_LOCAL_TABLE_SIZE];
     struct StackFrame *PreviousStackFrame;  /* the next lower stack frame */
 };
 
@@ -401,7 +401,7 @@ struct Picoc_Struct {
     /* parser global data */
     struct Table GlobalTable;
     struct CleanupTokenNode *CleanupTokenList;
-    struct TableEntry *GlobalHashTable[GLOBAL_TABLE_SIZE];
+    struct TableEntry *GlobalHashTable[PICOC_CONFIG_GLOBAL_TABLE_SIZE];
 
     /* lexer global data */
     struct TokenLine *InteractiveHead;
@@ -411,11 +411,11 @@ struct Picoc_Struct {
     union AnyValue LexAnyValue;
     struct Value LexValue;
     struct Table ReservedWordTable;
-    struct TableEntry *ReservedWordHashTable[RESERVED_WORD_TABLE_SIZE];
+    struct TableEntry *ReservedWordHashTable[PICOC_CONFIG_RESERVED_WORD_TABLE_SIZE];
 
     /* the table of string literal values */
     struct Table StringLiteralTable;
-    struct TableEntry *StringLiteralHashTable[STRING_LITERAL_TABLE_SIZE];
+    struct TableEntry *StringLiteralHashTable[PICOC_CONFIG_STRING_LITERAL_TABLE_SIZE];
 
     /* the stack */
     struct StackFrame *TopStackFrame;
@@ -481,7 +481,7 @@ struct Picoc_Struct {
 
     /* string table */
     struct Table StringTable;
-    struct TableEntry *StringHashTable[STRING_TABLE_SIZE];
+    struct TableEntry *StringHashTable[PICOC_CONFIG_STRING_TABLE_SIZE];
     char *StrEmpty;
 };
 
@@ -558,7 +558,7 @@ extern struct ValueType *TypeCreateOpaqueStruct(Picoc *pc, struct ParseState *Pa
 extern int TypeIsForwardDeclared(struct ParseState *Parser, struct ValueType *Typ);
 
 /* heap.c */
-#ifdef DEBUG_HEAP
+#ifdef PICOC_DEBUG_HEAP
 extern void ShowBigList(Picoc *pc);
 #endif
 extern void HeapInit(Picoc *pc, int StackSize);

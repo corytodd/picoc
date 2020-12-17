@@ -241,7 +241,7 @@ void UnistdGetuid(struct ParseState *Parser, struct Value *ReturnValue,
 void UnistdGetwd(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = getcwd(Param[0]->Val->Pointer, PATH_MAX);
+    ReturnValue->Val->Pointer = getcwd(Param[0]->Val->Pointer, PICOC_PATH_MAX);
 }
 
 void UnistdIsatty(struct ParseState *Parser, struct Value *ReturnValue,

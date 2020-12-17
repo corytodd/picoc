@@ -6,18 +6,75 @@
 
 #pragma once
 
-#include <ctype.h>
-#include <assert.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdarg.h>
-#include <setjmp.h>
-#include <math.h>
-#include <stdbool.h>
+/***********************************************************
+ * Configuration
+ *
+ * Required features
+ **********************************************************/
+#undef PICO_SIZEOF_FILE
+
+//! void* malloc(size_t size)
+#undef PICOC_FN_MALLOC
+
+//! void* calloc(size_t num, size_t size)
+#undef PICOC_FN_CALLOC
+
+//! void* realloc(void* ptr, size_t new_size)
+#undef PICOC_FN_REALLOC
+
+//! void free(void* ptr)
+#undef PICOC_FN_FREE
+
+/***********************************************************
+ * Configuration
+ *
+ * Optional features
+ **********************************************************/
+
+//! Global variable table
+#define PICOC_CONFIG_GLOBAL_TABLE_SIZE (97)
+
+//! Shared string table size
+#define PICOC_CONFIG_STRING_TABLE_SIZE (97)
+
+//! string literal table size
+#define PICOC_CONFIG_STRING_LITERAL_TABLE_SIZE (97)
+
+//! reserved word table size
+#define PICOC_CONFIG_RESERVED_WORD_TABLE_SIZE (97)
+
+//! maximum number of parameters to a function
+#define PICOC_CONFIG_PARAMETER_MAX (16)
+
+//! maximum number of characters on a line
+#define PICOC_CONFIG_LINEBUFFER_MAX (256)
+
+//! size of local variable table (can expand)
+#define PICOC_CONFIG_LOCAL_TABLE_SIZE (11)
+
+//! size of struct/union member table (can expand)
+#define PICOC_CONFIG_STRUCT_TABLE_SIZE (11)
+
+#define PICOC_INTERACTIVE_PROMPT_START "starting picoc " PICOC_VERSION " (Ctrl+D to exit)\n"
+#define PICOC_INTERACTIVE_PROMPT_STATEMENT "picoc> "
+#define PICOC_INTERACTIVE_PROMPT_LINE "     > "
+
+#if defined(__hppa__) || defined(__sparc__)
+//! the default data type to use for alignment
+#define PICOC_ALIGN_TYPE double
+#else
+//! the default data type to use for alignment
+#define PICOC_ALIGN_TYPE void*
+#endif
 
 //! Disable strptime function unless your platform wants it
 #define PICOC_NO_STRPTIME
 
+/***********************************************************
+ * Configuration
+ *
+ * Platform Features
+ **********************************************************/
 #if defined(__unix) || defined(__unix__)
 #include "picoc/platform/platform_unix.h"
 #elif defined(_WIN32) /*(predefined on MSVC)*/
@@ -27,62 +84,49 @@
 #endif
 
 #ifndef PICO_SIZEOF_FILE
-//! If your platform has an opaque FILE type, specify the size in your platform include
-#define PICO_SIZEOF_FILE sizeof(FILE)
+#error "PICO_SIZEOF_FILE not defined in platform_xxx.h"
 #endif
 
-#ifndef PICOC_MALLOC
-//! Override in platform_xxx.h
-#define PICOC_MALLOC malloc
+#ifndef PICOC_FN_MALLOC
+#error "PICOC_FN_MALLOC not defined in platform_xxx.h"
 #endif
 
-#ifndef PICOC_CALLOC
-//! Override in platform_xxx.h
-#define PICOC_CALLOC calloc
+#ifndef PICOC_FN_CALLOC
+#error "PICOC_FN_CALLOC not defined in platform_xxx.h"
 #endif
 
-#ifndef PICOC_REALLOC
-//! Override in platform_xxx.h
-#define PICOC_REALLOC realloc
+#ifndef PICOC_FN_REALLOC
+#error "PICOC_FN_REALLOC not defined in platform_xxx.h"
 #endif
 
-#ifndef PICOC_FREE
-//! Override in platform_xxx.h
-#define PICOC_FREE free
+#ifndef PICOC_FN_FREE
+#error "PICOC_FN_FREE not defined in platform_xxx.h"
 #endif
 
-#ifndef PATH_MAX
-#define PATH_MAX 255
+#ifndef PICOC_PATH_MAX
+#define PICOC_PATH_MAX 255
 #endif
 
-// TODO("CAT", "Rename all debugging defines")
-#undef DEBUG_HEAP
-#undef DEBUG_EXPRESSIONS
-#undef FANCY_ERROR_MESSAGES
-#undef DEBUG_ARRAY_INITIALIZER
-#undef DEBUG_LEXER
-#undef DEBUG_VAR_SCOPE
+/***********************************************************
+ * Debug Features
+ **********************************************************/
 
-#if defined(__hppa__) || defined(__sparc__)
-/* the default data type to use for alignment */
-#define ALIGN_TYPE double
-#else
-/* the default data type to use for alignment */
-#define ALIGN_TYPE void*
-#endif
+//! Debug heap allocator
+#undef PICOC_DEBUG_HEAP
 
-// TODO("CAT", "Rename all global size config defines")
-#define GLOBAL_TABLE_SIZE (97)                /* global variable table */
-#define STRING_TABLE_SIZE (97)                /* shared string table size */
-#define STRING_LITERAL_TABLE_SIZE (97)        /* string literal table size */
-#define RESERVED_WORD_TABLE_SIZE (97)         /* reserved word table size */
-#define PARAMETER_MAX (16)                    /* maximum number of parameters to a function */
-#define LINEBUFFER_MAX (256)                  /* maximum number of characters on a line */
-#define LOCAL_TABLE_SIZE (11)                 /* size of local variable table (can expand) */
-#define STRUCT_TABLE_SIZE (11)                /* size of struct/union member table (can expand) */
+//! Debug expression parser
+#undef PICOC_DEBUG_EXPRESSIONS
 
-#define INTERACTIVE_PROMPT_START "starting picoc " PICOC_VERSION " (Ctrl+D to exit)\n"
-#define INTERACTIVE_PROMPT_STATEMENT "picoc> "
-#define INTERACTIVE_PROMPT_LINE "     > "
+//! Show extra-detailed error messages
+#undef PICOC_FANCY_ERROR_MESSAGES
+
+//! Debug array initialization
+#undef PICOC_DEBUG_ARRAY_INITIALIZER
+
+//! Debug source lexer
+#undef PICOC_DEBUG_LEXER
+
+// !Debug variable scoping
+#undef PICOC_DEBUG_VAR_SCOPE
 
 extern jmp_buf ExitBuf;

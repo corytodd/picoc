@@ -641,7 +641,7 @@ void *LexTokenize(Picoc *pc, struct LexState *Lexer, int *TokenLen)
         /* store the token at the end of the stack area */
         Token = LexScanGetToken(pc, Lexer, &GotValue);
 
-#ifdef DEBUG_LEXER
+#ifdef PICOC_DEBUG_LEXER
         printf("Token: %02x\n", Token);
 #endif
         *(unsigned char*)TokenPos = Token;
@@ -671,7 +671,7 @@ void *LexTokenize(Picoc *pc, struct LexState *Lexer, int *TokenLen)
     assert(ReserveSpace >= MemUsed);
     memcpy(HeapMem, TokenSpace, MemUsed);
     HeapPopStack(pc, TokenSpace, ReserveSpace);
-#ifdef DEBUG_LEXER
+#ifdef PICOC_DEBUG_LEXER
     {
         int Count;
         printf("Tokens: ");
@@ -746,7 +746,7 @@ enum LexToken LexGetRawToken(struct ParseState *Parser, struct Value **Value,
         if (Parser->FileName == pc->StrEmpty &&
                 (pc->InteractiveHead == NULL || Token == TokenEOF)) {
             /* we're at the end of an interactive input token list */
-            char LineBuffer[LINEBUFFER_MAX];
+            char LineBuffer[PICOC_CONFIG_LINEBUFFER_MAX];
             void *LineTokens;
             int LineBytes;
             struct TokenLine *LineNode;
@@ -756,12 +756,12 @@ enum LexToken LexGetRawToken(struct ParseState *Parser, struct Value **Value,
                     &pc->InteractiveTail->Tokens[pc->InteractiveTail->NumBytes-TOKEN_DATA_OFFSET]) {
                 /* get interactive input */
                 if (pc->LexUseStatementPrompt) {
-                    Prompt = INTERACTIVE_PROMPT_STATEMENT;
+                    Prompt = PICOC_INTERACTIVE_PROMPT_STATEMENT;
                     pc->LexUseStatementPrompt = false;
                 } else
-                    Prompt = INTERACTIVE_PROMPT_LINE;
+                    Prompt = PICOC_INTERACTIVE_PROMPT_LINE;
 
-                if (PlatformGetLine(&LineBuffer[0], LINEBUFFER_MAX, Prompt) == NULL)
+                if (PlatformGetLine(&LineBuffer[0], PICOC_CONFIG_LINEBUFFER_MAX, Prompt) == NULL)
                     return TokenEOF;
 
                 /* put the new line at the end of the linked list of interactive lines */
@@ -845,7 +845,7 @@ enum LexToken LexGetRawToken(struct ParseState *Parser, struct Value **Value,
             Parser->Pos += TOKEN_DATA_OFFSET;
     }
 
-#ifdef DEBUG_LEXER
+#ifdef PICOC_DEBUG_LEXER
     printf("Got token=%02x inc=%d pos=%d\n", Token, IncPos, Parser->CharacterPos);
 #endif
     assert(Token >= TokenNone && Token <= TokenEndOfFunction);

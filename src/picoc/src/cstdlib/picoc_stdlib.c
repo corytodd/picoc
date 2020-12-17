@@ -48,27 +48,27 @@ void StdlibStrtoul(struct ParseState *Parser, struct Value *ReturnValue,
 void StdlibMalloc(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = PICOC_MALLOC(Param[0]->Val->Integer);
+    ReturnValue->Val->Pointer = PICOC_FN_MALLOC(Param[0]->Val->Integer);
 }
 
 void StdlibCalloc(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = PICOC_CALLOC(Param[0]->Val->Integer,
+    ReturnValue->Val->Pointer = PICOC_FN_CALLOC(Param[0]->Val->Integer,
         Param[1]->Val->Integer);
 }
 
 void StdlibRealloc(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = PICOC_REALLOC(Param[0]->Val->Pointer,
+    ReturnValue->Val->Pointer = PICOC_FN_REALLOC(Param[0]->Val->Pointer,
         Param[1]->Val->Integer);
 }
 
 void StdlibFree(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-    PICOC_FREE(Param[0]->Val->Pointer);
+  PICOC_FN_FREE(Param[0]->Val->Pointer);
 }
 
 void StdlibRand(struct ParseState *Parser, struct Value *ReturnValue,

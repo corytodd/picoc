@@ -10,10 +10,8 @@
 /* initialize the variable system */
 void VariableInit(Picoc *pc)
 {
-    TableInitTable(&(pc->GlobalTable), &(pc->GlobalHashTable)[0],
-        GLOBAL_TABLE_SIZE, true);
-    TableInitTable(&pc->StringLiteralTable, &pc->StringLiteralHashTable[0],
-        STRING_LITERAL_TABLE_SIZE, true);
+    TableInitTable(&(pc->GlobalTable), &(pc->GlobalHashTable)[0], PICOC_CONFIG_GLOBAL_TABLE_SIZE, true);
+    TableInitTable(&pc->StringLiteralTable, &pc->StringLiteralHashTable[0], PICOC_CONFIG_STRING_LITERAL_TABLE_SIZE, true);
     pc->TopStackFrame = NULL;
 }
 
@@ -81,7 +79,7 @@ void *VariableAlloc(Picoc *pc, struct ParseState *Parser, int Size, int OnHeap)
     if (NewValue == NULL)
         ProgramFail(Parser, "(VariableAlloc) out of memory");
 
-#ifdef DEBUG_HEAP
+#ifdef PICOC_DEBUG_HEAP
     if (!OnHeap)
         printf("pushing %d at 0x%lx\n", Size, (unsigned long)NewValue);
 #endif
@@ -189,7 +187,7 @@ int VariableScopeBegin(struct ParseState *Parser, int* OldScopeID)
     int Count;
     struct TableEntry *Entry;
     struct TableEntry *NextEntry;
-#ifdef DEBUG_VAR_SCOPE
+#ifdef PICOC_DEBUG_VAR_SCOPE
     int FirstPrint = 0;
 #endif
 
@@ -214,7 +212,7 @@ int VariableScopeBegin(struct ParseState *Parser, int* OldScopeID)
                     Entry->p.v.Val->OutOfScope == true) {
                 Entry->p.v.Val->OutOfScope = false;
                 Entry->p.v.Key = (char*)((intptr_t)Entry->p.v.Key & ~1);
-#ifdef DEBUG_VAR_SCOPE
+#ifdef PICOC_DEBUG_VAR_SCOPE
                 if (!FirstPrint) PRINT_SOURCE_POS();
                 FirstPrint = 1;
                 printf(">>> back into scope: %s %x %d\n", Entry->p.v.Key,
@@ -232,7 +230,7 @@ void VariableScopeEnd(struct ParseState *Parser, int ScopeID, int PrevScopeID)
     int Count;
     struct TableEntry *Entry;
     struct TableEntry *NextEntry = NULL;
-#ifdef DEBUG_VAR_SCOPE
+#ifdef PICOC_DEBUG_VAR_SCOPE
     int FirstPrint = 0;
 #endif
 
@@ -248,8 +246,8 @@ void VariableScopeEnd(struct ParseState *Parser, int ScopeID, int PrevScopeID)
             NextEntry = Entry->Next;
             if ((Entry->p.v.Val->ScopeID == ScopeID) &&
                     (Entry->p.v.Val->OutOfScope == false)) {
-#ifdef DEBUG_VAR_SCOPE
-                if (!FirstPrint) PRINT_SOURCE_POS();
+#ifdef PICOC_DEBUG_VAR_SCOPE
+              if (!FirstPrint) PRINT_SOURCE_POS();
                 FirstPrint = 1;
                 printf(">>> out of scope: %s %x %d\n", Entry->p.v.Key,
                     Entry->p.v.Val->ScopeID, Entry->p.v.Val->Val->Integer);
@@ -291,7 +289,7 @@ struct Value *VariableDefine(Picoc *pc, struct ParseState *Parser, char *Ident,
     struct Table * currentTable = (pc->TopStackFrame == NULL) ?
         &(pc->GlobalTable) : &(pc->TopStackFrame)->LocalTable;
 
-#ifdef DEBUG_VAR_SCOPE
+#ifdef PICOC_DEBUG_VAR_SCOPE
     if (Parser) fprintf(stderr, "def %s %x (%s:%d:%d)\n", Ident, ScopeID,
         Parser->FileName, Parser->Line, Parser->CharacterPos);
 #endif
@@ -331,9 +329,9 @@ struct Value *VariableDefineButIgnoreIdentical(struct ParseState *Parser,
         ProgramFail(Parser, "type '%t' isn't defined", Typ);
 
     if (IsStatic) {
-        char MangledName[LINEBUFFER_MAX];
+        char MangledName[PICOC_CONFIG_LINEBUFFER_MAX];
         char *MNPos = &MangledName[0];
-        char *MNEnd = &MangledName[LINEBUFFER_MAX-1];
+        char *MNEnd = &MangledName[PICOC_CONFIG_LINEBUFFER_MAX -1];
         const char *RegisteredMangledName;
 
         /* make the mangled static name (avoiding using sprintf()
@@ -436,7 +434,7 @@ void VariableStackPop(struct ParseState *Parser, struct Value *Var)
 {
     int Success;
 
-#ifdef DEBUG_HEAP
+#ifdef PICOC_DEBUG_HEAP
     if (Var->ValOnStack)
         printf("popping %ld at 0x%lx\n",
             (unsigned long)(sizeof(struct Value) + TypeSizeValue(Var, false)),
@@ -473,8 +471,7 @@ void VariableStackFrameAdd(struct ParseState *Parser, const char *FuncName,
     NewFrame->FuncName = FuncName;
     NewFrame->Parameter = (NumParams > 0) ?
         ((void*)((char*)NewFrame+sizeof(struct StackFrame))) : NULL;
-    TableInitTable(&NewFrame->LocalTable, &NewFrame->LocalHashTable[0],
-        LOCAL_TABLE_SIZE, false);
+    TableInitTable(&NewFrame->LocalTable, &NewFrame->LocalHashTable[0], PICOC_CONFIG_LOCAL_TABLE_SIZE, false);
     NewFrame->PreviousStackFrame = Parser->pc->TopStackFrame;
     Parser->pc->TopStackFrame = NewFrame;
 }

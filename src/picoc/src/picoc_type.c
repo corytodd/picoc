@@ -101,7 +101,7 @@ int TypeStackSizeValue(struct Value *Val)
 int TypeSizeValue(struct Value *Val, int Compact)
 {
     if (IS_INTEGER_NUMERIC(Val) && !Compact)
-        return sizeof(ALIGN_TYPE);  /* allow some extra room for type extension */
+        return sizeof(PICOC_ALIGN_TYPE);  /* allow some extra room for type extension */
     else if (Val->Typ->Base != TypeArray)
         return Val->Typ->Sizeof;
     else
@@ -112,7 +112,7 @@ int TypeSizeValue(struct Value *Val, int Compact)
 int TypeSize(struct ValueType *Typ, int ArraySize, int Compact)
 {
     if (IS_INTEGER_NUMERIC_TYPE(Typ) && !Compact)
-        return sizeof(ALIGN_TYPE);  /* allow some extra room for type extension */
+        return sizeof(PICOC_ALIGN_TYPE);  /* allow some extra room for type extension */
     else if (Typ->Base != TypeArray)
         return Typ->Sizeof;
     else
@@ -257,12 +257,12 @@ void TypeParseStruct(struct ParseState *Parser, struct ValueType **Typ,
 
     LexGetToken(Parser, NULL, true);
     (*Typ)->Members = VariableAlloc(pc, Parser,
-        sizeof(struct Table)+STRUCT_TABLE_SIZE*sizeof(struct TableEntry), true);
+        sizeof(struct Table)+ PICOC_CONFIG_STRUCT_TABLE_SIZE *sizeof(struct TableEntry), true);
     (*Typ)->Members->HashTable =
         (struct TableEntry**)((char*)(*Typ)->Members + sizeof(struct Table));
     TableInitTable((*Typ)->Members,
         (struct TableEntry**)((char*)(*Typ)->Members + sizeof(struct Table)),
-        STRUCT_TABLE_SIZE, true);
+                   PICOC_CONFIG_STRUCT_TABLE_SIZE, true);
 
     do {
         TypeParse(Parser, &MemberType, &MemberIdentifier, NULL);
@@ -321,12 +321,12 @@ struct ValueType *TypeCreateOpaqueStruct(Picoc *pc, struct ParseState *Parser,
     /* create the (empty) table */
     Typ->Members = VariableAlloc(pc,
         Parser,
-        sizeof(struct Table)+STRUCT_TABLE_SIZE*sizeof(struct TableEntry), true);
+        sizeof(struct Table)+ PICOC_CONFIG_STRUCT_TABLE_SIZE *sizeof(struct TableEntry), true);
     Typ->Members->HashTable = (struct TableEntry**)((char*)Typ->Members +
         sizeof(struct Table));
     TableInitTable(Typ->Members,
         (struct TableEntry**)((char*)Typ->Members+sizeof(struct Table)),
-        STRUCT_TABLE_SIZE, true);
+                   PICOC_CONFIG_STRUCT_TABLE_SIZE, true);
     Typ->Sizeof = Size;
 
     return Typ;

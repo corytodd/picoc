@@ -93,8 +93,8 @@ struct Value *ParseFunctionDefinition(struct ParseState *Parser,
     LexGetToken(Parser, NULL, true);  /* open bracket */
     ParserCopy(&ParamParser, Parser);
     ParamCount = ParseCountParams(Parser);
-    if (ParamCount > PARAMETER_MAX)
-        ProgramFail(Parser, "too many parameters (%d allowed)", PARAMETER_MAX);
+    if (ParamCount > PICOC_CONFIG_PARAMETER_MAX)
+        ProgramFail(Parser, "too many parameters (%d allowed)", PICOC_CONFIG_PARAMETER_MAX);
 
     FuncValue = VariableAllocValueAndData(pc, Parser,
         sizeof(struct FuncDef) + sizeof(struct ValueType*)*ParamCount +
@@ -212,7 +212,7 @@ int ParseArrayInitializer(struct ParseState *Parser, struct Value *NewVariable,
                 NewVariable->Typ->Identifier, true);
             VariableRealloc(Parser, NewVariable, TypeSizeValue(NewVariable, false));
         }
-#ifdef DEBUG_ARRAY_INITIALIZER
+#ifdef PICOC_DEBUG_ARRAY_INITIALIZER
         PRINT_SOURCE_POS();
         printf("array size: %d \n", NewVariable->Typ->ArraySize);
 #endif
@@ -233,7 +233,7 @@ int ParseArrayInitializer(struct ParseState *Parser, struct Value *NewVariable,
                     (union AnyValue*)(&NewVariable->Val->ArrayMem[0] +
                         SubArraySize*ArrayIndex),
                     true, NewVariable);
-#ifdef DEBUG_ARRAY_INITIALIZER
+#ifdef PICOC_DEBUG_ARRAY_INITIALIZER
                 int FullArraySize = TypeSize(NewVariable->Typ,
                     NewVariable->Typ->ArraySize, true);
                 PRINT_SOURCE_POS();
@@ -267,7 +267,7 @@ int ParseArrayInitializer(struct ParseState *Parser, struct Value *NewVariable,
                         break;
                 }
                 ElementSize = TypeSize(ElementType, ElementType->ArraySize, true);
-#ifdef DEBUG_ARRAY_INITIALIZER
+#ifdef PICOC_DEBUG_ARRAY_INITIALIZER
                 PRINT_SOURCE_POS();
                 printf("[%d/%d] element size: %d (x%d) \n", ArrayIndex, TotalSize,
                     ElementSize, ElementType->ArraySize);
@@ -931,6 +931,6 @@ void PicocParseInteractiveNoStartPrompt(Picoc *pc, int EnableDebugger)
 /* parse interactively, showing a startup message */
 void PicocParseInteractive(Picoc *pc)
 {
-    PlatformPrintf(pc->CStdOut, INTERACTIVE_PROMPT_START);
+    PlatformPrintf(pc->CStdOut, PICOC_INTERACTIVE_PROMPT_START);
     PicocParseInteractiveNoStartPrompt(pc, gEnableDebugger);
 }

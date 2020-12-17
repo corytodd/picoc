@@ -95,7 +95,7 @@ static struct OpPrecedence OperatorPrecedence[] = {
 };
 
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
 static void ExpressionStackShow(Picoc *pc, struct ExpressionStack *StackTop);
 #endif
 static int IsTypeToken(struct ParseState * Parser, enum LexToken t, struct Value * LexValue);
@@ -120,7 +120,7 @@ static void ExpressionParseMacroCall(struct ParseState *Parser, struct Expressio
 static void ExpressionParseFunctionCall(struct ParseState *Parser, struct ExpressionStack **StackTop, const char *FuncName, int RunIt);
 
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
 /* show the contents of the expression stack */
 void ExpressionStackShow(Picoc *pc, struct ExpressionStack *StackTop)
 {
@@ -382,11 +382,11 @@ void ExpressionStackPushValueNode(struct ParseState *Parser,
     StackNode->Next = *StackTop;
     StackNode->Val = ValueLoc;
     *StackTop = StackNode;
-#ifdef FANCY_ERROR_MESSAGES
+#ifdef PICOC_FANCY_ERROR_MESSAGES
     StackNode->Line = Parser->Line;
     StackNode->CharacterPos = Parser->CharacterPos;
 #endif
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     ExpressionStackShow(Parser->pc, *StackTop);
 #endif
 }
@@ -574,7 +574,7 @@ void ExpressionAssign(struct ParseState *Parser, struct Value *DestValue,
                 SourceValue->Typ->FromType->Base == TypeChar) {
             if (DestValue->Typ->ArraySize == 0) { /* char x[] = "abcd", x is unsized */
                 int Size = strlen(SourceValue->Val->Pointer) + 1;
-#ifdef DEBUG_ARRAY_INITIALIZER
+#ifdef PICOC_DEBUG_ARRAY_INITIALIZER
                 PRINT_SOURCE_POS();
                 fprintf(stderr, "str size: %d\n", Size);
 #endif
@@ -586,7 +586,7 @@ void ExpressionAssign(struct ParseState *Parser, struct Value *DestValue,
             }
             /* else, it's char x[10] = "abcd" */
 
-#ifdef DEBUG_ARRAY_INITIALIZER
+#ifdef PICOC_DEBUG_ARRAY_INITIALIZER
             PRINT_SOURCE_POS();
             fprintf(stderr, "char[%d] from char* (len=%d)\n",
                     DestValue->Typ->ArraySize,
@@ -662,7 +662,7 @@ void ExpressionPrefixOperator(struct ParseState *Parser,
     union AnyValue *ValPtr;
     struct ValueType *Typ;
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionPrefixOperator()\n");
 #endif
 
@@ -802,8 +802,8 @@ void ExpressionPrefixOperator(struct ParseState *Parser,
 void ExpressionPostfixOperator(struct ParseState *Parser,
     struct ExpressionStack **StackTop, enum LexToken Op, struct Value *TopValue)
 {
-#ifdef DEBUG_EXPRESSIONS
-    printf("ExpressionPostfixOperator()\n");
+#ifdef PICOC_DEBUG_EXPRESSIONS
+  printf("ExpressionPostfixOperator()\n");
 #endif
 
     if (TopValue->Typ == &Parser->pc->FPType) {
@@ -882,7 +882,7 @@ void ExpressionInfixOperator(struct ParseState *Parser,
     struct Value *StackValue;
     void *Pointer;
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionInfixOperator()\n");
 #endif
 
@@ -1216,7 +1216,7 @@ void ExpressionStackCollapse(struct ParseState *Parser,
     struct ExpressionStack *TopStackNode = *StackTop;
     struct ExpressionStack *TopOperatorNode;
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionStackCollapse(%d):\n", Precedence);
     ExpressionStackShow(Parser->pc, *StackTop);
 #endif
@@ -1236,7 +1236,7 @@ void ExpressionStackCollapse(struct ParseState *Parser,
             switch (TopOperatorNode->Order) {
             case OrderPrefix:
                 /* prefix evaluation */
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
                 printf("prefix evaluation\n");
 #endif
                 TopValue = TopStackNode->Val;
@@ -1263,7 +1263,7 @@ void ExpressionStackCollapse(struct ParseState *Parser,
                 break;
             case OrderPostfix:
                 /* postfix evaluation */
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
                 printf("postfix evaluation\n");
 #endif
                 TopValue = TopStackNode->Next->Val;
@@ -1289,7 +1289,7 @@ void ExpressionStackCollapse(struct ParseState *Parser,
                 break;
             case OrderInfix:
                 /* infix evaluation */
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
                 printf("infix evaluation\n");
 #endif
                 TopValue = TopStackNode->Val;
@@ -1334,12 +1334,12 @@ void ExpressionStackCollapse(struct ParseState *Parser,
             if (FoundPrecedence <= *IgnorePrecedence)
                 *IgnorePrecedence = DEEP_PRECEDENCE;
         }
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
         ExpressionStackShow(Parser->pc, *StackTop);
 #endif
         TopStackNode = *StackTop;
     }
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionStackCollapse() finished\n");
     ExpressionStackShow(Parser->pc, *StackTop);
 #endif
@@ -1357,14 +1357,14 @@ void ExpressionStackPushOperator(struct ParseState *Parser,
     StackNode->Op = Token;
     StackNode->Precedence = Precedence;
     *StackTop = StackNode;
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionStackPushOperator()\n");
 #endif
-#ifdef FANCY_ERROR_MESSAGES
+#ifdef PICOC_FANCY_ERROR_MESSAGES
     StackNode->Line = Parser->Line;
     StackNode->CharacterPos = Parser->CharacterPos;
 #endif
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     ExpressionStackShow(Parser->pc, *StackTop);
 #endif
 }
@@ -1433,7 +1433,7 @@ int ExpressionParse(struct ParseState *Parser, struct Value **Result)
     struct Value *LexValue;
     struct ExpressionStack *StackTop = NULL;
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionParse():\n");
 #endif
 
@@ -1699,7 +1699,7 @@ int ExpressionParse(struct ParseState *Parser, struct Value **Result)
                 TypeStackSizeValue(StackTop->Val));
     }
 
-#ifdef DEBUG_EXPRESSIONS
+#ifdef PICOC_DEBUG_EXPRESSIONS
     printf("ExpressionParse() done\n\n");
     ExpressionStackShow(Parser->pc, StackTop);
 #endif

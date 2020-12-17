@@ -13,8 +13,7 @@ static struct TableEntry *TableSearchIdentifier(struct Table *Tbl,
 /* initialize the shared string system */
 void TableInit(Picoc *pc)
 {
-    TableInitTable(&pc->StringTable, &pc->StringHashTable[0],
-            STRING_TABLE_SIZE, true);
+    TableInitTable(&pc->StringTable, &pc->StringHashTable[0], PICOC_CONFIG_STRING_TABLE_SIZE, true);
     pc->StrEmpty = TableStrRegister(pc, "");
 }
 

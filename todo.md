@@ -1,10 +1,5 @@
 # TODO
 
-## Defines
-
-Cleanup all the defines so they are easier to find. I'd like all related defines to have the same prefix.
-e.g. CONFIG_GLOBAL_TABLE_SIZE, CONFIG_STRING_TABLE_SIZE. Types and functions should follow a similar pattern.
-
 ## More Headers
 
 Split up the mega headers into smaller pieces. We can keep a single header entry point but each module should

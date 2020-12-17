@@ -137,7 +137,7 @@ void PrintSourceTextErrorLine(IOFILE *Stream, const char *FileName,
         /* assume we're in interactive mode - try to make the arrow match
             up with the input text */
         for (CCount = 0;
-                CCount < CharacterPos+(int)strlen(INTERACTIVE_PROMPT_STATEMENT);
+                CCount < CharacterPos+(int)strlen(PICOC_INTERACTIVE_PROMPT_STATEMENT);
                 CCount++)
             PrintCh(' ', Stream);
     }
