@@ -25,6 +25,12 @@
 //! void free(void* ptr)
 #undef PICOC_FN_FREE
 
+//! int snprintf(char* const buff, size_t const size, char const* const format)
+#undef PICOC_FN_SNPRINTF
+
+//! int fileno(FILE* stream)
+#undef PICOC_FN_FILENO
+
 /***********************************************************
  * Configuration
  *
@@ -55,6 +61,15 @@
 //! size of struct/union member table (can expand)
 #define PICOC_CONFIG_STRUCT_TABLE_SIZE (11)
 
+//! Do not use floating point. This includes blocking all builtins that use fp.
+#undef PICOC_CONFIG_NO_FP
+
+//! Disable strptime function unless your platform wants it
+#define PICOC_NO_STRPTIME
+
+//! Disable unistd
+#undef PICOC_NO_UNISTD
+
 #define PICOC_INTERACTIVE_PROMPT_START "starting picoc " PICOC_VERSION " (Ctrl+D to exit)\n"
 #define PICOC_INTERACTIVE_PROMPT_STATEMENT "picoc> "
 #define PICOC_INTERACTIVE_PROMPT_LINE "     > "
@@ -66,9 +81,6 @@
 //! the default data type to use for alignment
 #define PICOC_ALIGN_TYPE void*
 #endif
-
-//! Disable strptime function unless your platform wants it
-#define PICOC_NO_STRPTIME
 
 /***********************************************************
  * Configuration
@@ -101,6 +113,14 @@
 
 #ifndef PICOC_FN_FREE
 #error "PICOC_FN_FREE not defined in platform_xxx.h"
+#endif
+
+#ifndef PICOC_FN_SNPRINTF
+#error "PICOC_FN_SNPRINTF not defined in platform_xxx.h"
+#endif
+
+#ifndef PICOC_FN_FILENO
+#error "PICOC_FN_FILENO not defined in platform_xxx.h"
 #endif
 
 #ifndef PICOC_PATH_MAX

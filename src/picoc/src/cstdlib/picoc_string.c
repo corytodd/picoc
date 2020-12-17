@@ -62,6 +62,19 @@ void StringRindex(struct ParseState *Parser, struct Value *ReturnValue,
     ReturnValue->Val->Pointer = rindex(Param[0]->Val->Pointer,
         Param[1]->Val->Integer);
 }
+
+void StringStrdup(struct ParseState *Parser, struct Value *ReturnValue,
+    struct Value **Param, int NumArgs)
+{
+    ReturnValue->Val->Pointer = (void*)strdup(Param[0]->Val->Pointer);
+}
+
+void StringStrtok_r(struct ParseState *Parser, struct Value *ReturnValue,
+    struct Value **Param, int NumArgs)
+{
+    ReturnValue->Val->Pointer = (void*)strtok_r(Param[0]->Val->Pointer,
+        Param[1]->Val->Pointer, Param[2]->Val->Pointer);
+}
 #endif
 
 void StringStrlen(struct ParseState *Parser, struct Value *ReturnValue,
@@ -174,27 +187,14 @@ void StringStrxfrm(struct ParseState *Parser, struct Value *ReturnValue,
         Param[1]->Val->Pointer, Param[2]->Val->Integer);
 }
 
-#ifndef WIN32
-void StringStrdup(struct ParseState *Parser, struct Value *ReturnValue,
-    struct Value **Param, int NumArgs)
-{
-    ReturnValue->Val->Pointer = (void*)strdup(Param[0]->Val->Pointer);
-}
-
-void StringStrtok_r(struct ParseState *Parser, struct Value *ReturnValue,
-    struct Value **Param, int NumArgs)
-{
-    ReturnValue->Val->Pointer = (void*)strtok_r(Param[0]->Val->Pointer,
-        Param[1]->Val->Pointer, Param[2]->Val->Pointer);
-}
-#endif
-
 /* all string.h functions */
 struct LibraryFunction StringFunctions[] =
 {
 #ifndef WIN32
-	{StringIndex,   "char *index(char *,int);"},
+    {StringIndex,   "char *index(char *,int);"},
     {StringRindex,  "char *rindex(char *,int);"},
+    {StringStrdup,  "char *strdup(char *);"},
+    {StringStrtok_r,"char *strtok_r(char *,char *,char **);"},
 #endif
     {StringMemcpy,  "void *memcpy(void *,void *,int);"},
     {StringMemmove, "void *memmove(void *,void *,int);"},
@@ -218,10 +218,6 @@ struct LibraryFunction StringFunctions[] =
     {StringStrstr,  "char *strstr(char *,char *);"},
     {StringStrtok,  "char *strtok(char *,char *);"},
     {StringStrxfrm, "int strxfrm(char *,char *,int);"},
-#ifndef WIN32
-	{StringStrdup,  "char *strdup(char *);"},
-    {StringStrtok_r,"char *strtok_r(char *,char *,char **);"},
-#endif
     {NULL,          NULL }
 };
 

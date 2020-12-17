@@ -100,14 +100,8 @@ void StdioFprintfWord(StdOutStream *Stream, const char *Format, unsigned int Val
     if (Stream->FilePtr != NULL)
         Stream->CharCount += fprintf(Stream->FilePtr, Format, Value);
     else if (Stream->StrOutLen >= 0) {
-#ifndef WIN32
-		int CCount = snprintf(Stream->StrOutPtr, Stream->StrOutLen,
-            Format, Value);
-#else
-		int CCount = _snprintf(Stream->StrOutPtr, Stream->StrOutLen,
-            Format, Value);
-#endif
-		Stream->StrOutPtr += CCount;
+        int CCount = PICOC_FN_SNPRINTF(Stream->StrOutPtr, Stream->StrOutLen, Format, Value);
+        Stream->StrOutPtr += CCount;
         Stream->StrOutLen -= CCount;
         Stream->CharCount += CCount;
     } else {
@@ -160,11 +154,7 @@ void StdioFprintfLong(StdOutStream *Stream, const char *Format, uint64_t Value) 
     if (Stream->FilePtr != NULL)
         Stream->CharCount += fprintf(Stream->FilePtr, PlatformFormat, Value);
     else if (Stream->StrOutLen >= 0) {
-#ifndef WIN32
-        int CCount = snprintf(Stream->StrOutPtr, Stream->StrOutLen, PlatformFormat, Value);
-#else
-        int CCount = _snprintf(Stream->StrOutPtr, Stream->StrOutLen, PlatformFormat, Value);
-#endif
+        int CCount = PICOC_FN_SNPRINTF(Stream->StrOutPtr, Stream->StrOutLen, PlatformFormat, Value);
         Stream->StrOutPtr += CCount;
         Stream->StrOutLen -= CCount;
         Stream->CharCount += CCount;
@@ -181,14 +171,8 @@ void StdioFprintfFP(StdOutStream *Stream, const char *Format, double Value)
     if (Stream->FilePtr != NULL)
         Stream->CharCount += fprintf(Stream->FilePtr, Format, Value);
     else if (Stream->StrOutLen >= 0) {
-#ifndef WIN32
-        int CCount = snprintf(Stream->StrOutPtr, Stream->StrOutLen,
-            Format, Value);
-#else
-        int CCount = _snprintf(Stream->StrOutPtr, Stream->StrOutLen,
-            Format, Value);
-#endif
-		Stream->StrOutPtr += CCount;
+        int CCount = PICOC_FN_SNPRINTF(Stream->StrOutPtr, Stream->StrOutLen, Format, Value);
+        Stream->StrOutPtr += CCount;
         Stream->StrOutLen -= CCount;
         Stream->CharCount += CCount;
     } else {
@@ -204,13 +188,7 @@ void StdioFprintfPointer(StdOutStream *Stream, const char *Format, void *Value)
     if (Stream->FilePtr != NULL)
         Stream->CharCount += fprintf(Stream->FilePtr, Format, Value);
     else if (Stream->StrOutLen >= 0) {
-#ifndef WIN32
-        int CCount = snprintf(Stream->StrOutPtr, Stream->StrOutLen,
-            Format, Value);
-#else
-		int CCount = _snprintf(Stream->StrOutPtr, Stream->StrOutLen,
-            Format, Value);
-#endif
+        int CCount = PICOC_FN_SNPRINTF(Stream->StrOutPtr, Stream->StrOutLen,Format, Value);
         Stream->StrOutPtr += CCount;
         Stream->StrOutLen -= CCount;
         Stream->CharCount += CCount;
@@ -554,11 +532,7 @@ void StdioFerror(struct ParseState *Parser, struct Value *ReturnValue,
 void StdioFileno(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-#ifndef WIN32
-    ReturnValue->Val->Integer = fileno(Param[0]->Val->Pointer);
-#else
-    ReturnValue->Val->Integer = _fileno(Param[0]->Val->Pointer);
-#endif
+    ReturnValue->Val->Integer = PICOC_FN_FILENO(Param[0]->Val->Pointer);
 }
 
 void StdioFflush(struct ParseState *Parser, struct Value *ReturnValue,

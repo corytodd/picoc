@@ -22,6 +22,8 @@
 #define PICOC_FN_CALLOC calloc
 #define PICOC_FN_REALLOC realloc
 #define PICOC_FN_FREE free
+#define PICOC_FN_SNPRINTF snprintf
+#define PICOC_FN_FILENO fileno
 
 #define PICOC_SIZEOF_FILE sizeof(FILE)
 

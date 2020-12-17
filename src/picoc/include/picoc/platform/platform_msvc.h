@@ -23,5 +23,11 @@
 #define PICOC_FN_CALLOC calloc
 #define PICOC_FN_REALLOC realloc
 #define PICOC_FN_FREE free
+#define PICOC_FN_SNPRINTF _snprintf
+#define PICOC_FN_FILENO _fileno
 
 #define PICOC_SIZEOF_FILE sizeof(FILE)
+#define PICOC_NO_UNISTD
+
+//! Disable compiler warnings about unsafe functions
+#define _CRT_SECURE_NO_WARNINGS
