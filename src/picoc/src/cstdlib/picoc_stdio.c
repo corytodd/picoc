@@ -20,11 +20,6 @@ static int _IONBFValue = _IONBF;
 static int L_tmpnamValue = L_tmpnam;
 static int GETS_MAXValue = 255;  /* arbitrary maximum size of a gets() file */
 
-static FILE *stdinValue;
-static FILE *stdoutValue;
-static FILE *stderrValue;
-
-
 /* our own internal output stream which can output to FILE * or strings */
 typedef struct StdOutStreamStruct
 {
@@ -43,12 +38,9 @@ struct StdVararg
 };
 
 /* initializes the I/O system so error reporting works */
-void BasicIOInit(Picoc *pc)
+void BasicIOInit(Picoc *pc, picoc_io_t * pIO)
 {
-    pc->CStdOut = stdout;
-    stdinValue = stdin;
-    stdoutValue = stdout;
-    stderrValue = stderr;
+    pc->pCStdOut = pIO;
 }
 
 /* output a single character to either a FILE * or a string */
@@ -650,16 +642,18 @@ void StdioPrintf(struct ParseState *Parser, struct Value *ReturnValue,
 {
     struct StdVararg PrintfArgs;
 
+    IOFILE* pStdout = Parser->pc->pCStdOut->pStdout;
     PrintfArgs.Param = Param;
     PrintfArgs.NumArgs = NumArgs - 1;
-    ReturnValue->Val->Integer = StdioBasePrintf(Parser, stdout, NULL, 0,
+    ReturnValue->Val->Integer = StdioBasePrintf(Parser, pStdout, NULL, 0,
         Param[0]->Val->Pointer, &PrintfArgs);
 }
 
 void StdioVprintf(struct ParseState *Parser, struct Value *ReturnValue,
     struct Value **Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = StdioBasePrintf(Parser, stdout, NULL, 0,
+    IOFILE* pStdout = Parser->pc->pCStdOut->pStdout;
+    ReturnValue->Val->Integer = StdioBasePrintf(Parser, pStdout, NULL, 0,
         Param[0]->Val->Pointer, Param[1]->Val->Pointer);
 }
 
@@ -878,11 +872,11 @@ void StdioSetupFunc(Picoc *pc)
 
     /* define stdin, stdout and stderr */
     VariableDefinePlatformVar(pc, NULL, "stdin", FilePtrType,
-        (union AnyValue*)&stdinValue, false);
+        (union AnyValue*)&pc->pCStdOut->pStdin, false);
     VariableDefinePlatformVar(pc, NULL, "stdout", FilePtrType,
-        (union AnyValue*)&stdoutValue, false);
+        (union AnyValue*)&pc->pCStdOut->pStdout, false);
     VariableDefinePlatformVar(pc, NULL, "stderr", FilePtrType,
-        (union AnyValue*)&stderrValue, false);
+        (union AnyValue*)&pc->pCStdOut->pStderr, false);
 
     /* define NULL, true and false */
     if (!VariableDefined(pc, TableStrRegister(pc, "NULL")))

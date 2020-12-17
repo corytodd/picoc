@@ -9,6 +9,7 @@
 #pragma once
 
 #include "picoc/picoc_platform.h"
+#include "picoc/picoc_types.h"
 
 #ifndef NULL
 #define NULL 0
@@ -28,8 +29,6 @@
                             }
 
 #define PRINT_TYPE(typ) PlatformPrintf(Parser->pc->CStdOut, "%t\n", typ);
-
-typedef FILE IOFILE;
 
 /* coercion of numeric types to other numeric types */
 #define IS_FP(v) ((v)->Typ->Base == TypeFP)
@@ -468,7 +467,7 @@ struct Picoc_Struct {
     int BigEndian;
     int LittleEndian;
 
-    IOFILE *CStdOut;
+  picoc_io_t *pCStdOut;
     
     // TODO CAT not sure what to do about this incomplete type
     // IOFILE CStdOutBase;
@@ -613,7 +612,7 @@ extern int VariableScopeBegin(struct ParseState *Parser, int *PrevScopeID);
 extern void VariableScopeEnd(struct ParseState *Parser, int ScopeID, int PrevScopeID);
 
 /* clibrary.c */
-extern void BasicIOInit(Picoc *pc);
+extern void BasicIOInit(Picoc *pc, picoc_io_t * pIO);
 extern void LibraryInit(Picoc *pc);
 extern void LibraryAdd(Picoc *pc, struct LibraryFunction *FuncList);
 extern void CLibraryInit(Picoc *pc);

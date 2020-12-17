@@ -17,11 +17,11 @@ static int gEnableDebugger = false;
 
 
 /* initialize everything */
-void PicocInitialize(Picoc *pc, int StackSize)
+void PicocInitialize(Picoc *pc, int StackSize, picoc_io_t* pIO)
 {
     memset(pc, '\0', sizeof(*pc));
     PlatformInit(pc);
-    BasicIOInit(pc);
+    BasicIOInit(pc, pIO);
     HeapInit(pc, StackSize);
     TableInit(pc);
     VariableInit(pc);
@@ -149,12 +149,13 @@ void ProgramFail(struct ParseState *Parser, const char *Message, ...)
 {
     va_list Args;
 
-    PrintSourceTextErrorLine(Parser->pc->CStdOut, Parser->FileName,
+    FILE* stream = Parser->pc->pCStdOut->pStdout;
+    PrintSourceTextErrorLine(stream, Parser->FileName,
         Parser->SourceText, Parser->Line, Parser->CharacterPos);
     va_start(Args, Message);
-    PlatformVPrintf(Parser->pc->CStdOut, Message, Args);
+    PlatformVPrintf(stream, Message, Args);
     va_end(Args);
-    PlatformPrintf(Parser->pc->CStdOut, "\n");
+    PlatformPrintf(stream, "\n");
     PlatformExit(Parser->pc, 1);
 }
 
@@ -163,10 +164,11 @@ void ProgramFailNoParser(Picoc *pc, const char *Message, ...)
 {
     va_list Args;
 
+    FILE* stream = pc->pCStdOut->pStdout;
     va_start(Args, Message);
-    PlatformVPrintf(pc->CStdOut, Message, Args);
+    PlatformVPrintf(stream, Message, Args);
     va_end(Args);
-    PlatformPrintf(pc->CStdOut, "\n");
+    PlatformPrintf(stream, "\n");
     PlatformExit(pc, 1);
 }
 
@@ -175,22 +177,22 @@ void AssignFail(struct ParseState *Parser, const char *Format,
     struct ValueType *Type1, struct ValueType *Type2, int Num1, int Num2,
     const char *FuncName, int ParamNo)
 {
-    IOFILE *Stream = Parser->pc->CStdOut;
+    FILE* stream = Parser->pc->pCStdOut->pStdout;
 
-    PrintSourceTextErrorLine(Parser->pc->CStdOut, Parser->FileName,
+    PrintSourceTextErrorLine(stream, Parser->FileName,
         Parser->SourceText, Parser->Line, Parser->CharacterPos);
-    PlatformPrintf(Stream, "can't %s ", (FuncName == NULL) ? "assign" : "set");
+    PlatformPrintf(stream, "can't %s ", (FuncName == NULL) ? "assign" : "set");
 
     if (Type1 != NULL)
-        PlatformPrintf(Stream, Format, Type1, Type2);
+        PlatformPrintf(stream, Format, Type1, Type2);
     else
-        PlatformPrintf(Stream, Format, Num1, Num2);
+        PlatformPrintf(stream, Format, Num1, Num2);
 
     if (FuncName != NULL)
-        PlatformPrintf(Stream, " in argument %d of call to %s()", ParamNo,
+        PlatformPrintf(stream, " in argument %d of call to %s()", ParamNo,
             FuncName);
 
-    PlatformPrintf(Stream, "\n");
+    PlatformPrintf(stream, "\n");
     PlatformExit(Parser->pc, 1);
 }
 
@@ -199,12 +201,14 @@ void LexFail(Picoc *pc, struct LexState *Lexer, const char *Message, ...)
 {
     va_list Args;
 
-    PrintSourceTextErrorLine(pc->CStdOut, Lexer->FileName, Lexer->SourceText,
+    FILE* stream = pc->pCStdOut->pStdout;
+
+    PrintSourceTextErrorLine(stream, Lexer->FileName, Lexer->SourceText,
         Lexer->Line, Lexer->CharacterPos);
     va_start(Args, Message);
-    PlatformVPrintf(pc->CStdOut, Message, Args);
+    PlatformVPrintf(stream, Message, Args);
     va_end(Args);
-    PlatformPrintf(pc->CStdOut, "\n");
+    PlatformPrintf(stream, "\n");
     PlatformExit(pc, 1);
 }
 

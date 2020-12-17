@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     int ParamCount = 1;
     int DontRunMain = false;
     int StackSize = getenv("STACKSIZE") ? atoi(getenv("STACKSIZE")) : PICOC_STACK_SIZE;
+    char* outfile = getenv("OUTFILE");
     Picoc pc;
 
     if (argc < 2 || strcmp(argv[ParamCount], "-h") == 0) {
@@ -36,7 +37,25 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    PicocInitialize(&pc, StackSize);
+    IOFILE* pStdout = NULL;
+    bool closeFile = false;
+    if(outfile != NULL){
+      pStdout = fopen(outfile, "w");
+      if(pStdout != NULL){
+        closeFile = true;
+      }
+    }
+    if(pStdout == NULL){
+      pStdout = stdout;
+    }
+
+    picoc_io_t io = {
+        .pStdout = pStdout,
+        .pStdin = stdin,
+        .pStderr = stderr
+    };
+
+    PicocInitialize(&pc, StackSize, &io);
 
     if (strcmp(argv[ParamCount], "-s") == 0) {
         DontRunMain = true;
@@ -50,6 +69,9 @@ int main(int argc, char **argv)
     } else {
         if (PicocPlatformSetExitPoint(&pc)) {
             PicocCleanup(&pc);
+            if(closeFile) {
+              fclose(pStdout);
+            }
             return pc.PicocExitValue;
         }
 
@@ -63,5 +85,8 @@ int main(int argc, char **argv)
     }
 
     PicocCleanup(&pc);
+    if(closeFile){
+      fclose(pStdout);
+    }
     return pc.PicocExitValue;
 }

@@ -10,8 +10,11 @@ static int gEnableDebugger = false;
 /* mark where to end the program for platforms which require this */
 jmp_buf PicocExitBuf;
 
+static picoc_io_t * l_PicocIO;
+
 void PlatformInit(Picoc *pc)
 {
+  l_PicocIO = pc->pCStdOut;
 }
 
 void PlatformCleanup(Picoc *pc)
@@ -24,14 +27,14 @@ char *PlatformGetLine(char *Buf, int MaxLen, const char *Prompt)
     if (Prompt != NULL)
         printf("%s", Prompt);
 
-    fflush(stdout);
+    fflush(l_PicocIO->pStdout);
     return fgets(Buf, MaxLen, stdin);
 }
 
 /* get a character of interactive input */
 int PlatformGetCharacter()
 {
-    fflush(stdout);
+    fflush(l_PicocIO->pStdout);
     return getchar();
 }
 

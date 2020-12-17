@@ -925,12 +925,12 @@ void PicocParseInteractiveNoStartPrompt(Picoc *pc, int EnableDebugger)
     if (Ok == ParseResultError)
         ProgramFail(&Parser, "parse error");
 
-    PlatformPrintf(pc->CStdOut, "\n");
+    PlatformPrintf(pc->pCStdOut->pStdout, "\n");
 }
 
 /* parse interactively, showing a startup message */
 void PicocParseInteractive(Picoc *pc)
 {
-    PlatformPrintf(pc->CStdOut, PICOC_INTERACTIVE_PROMPT_START);
+    PlatformPrintf(pc->pCStdOut->pStdout, PICOC_INTERACTIVE_PROMPT_START);
     PicocParseInteractiveNoStartPrompt(pc, gEnableDebugger);
 }
