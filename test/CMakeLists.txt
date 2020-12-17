@@ -37,7 +37,7 @@ ADD_CUSTOM_COMMAND(
         OUTPUT GeneratedTests.hpp
         COMMAND generator ${GEN_FILE}
         DEPENDS generator
-        COMMENT "Generating Tiger Grammar"
+        COMMENT "Generating Unit Test Data"
 )
 
 add_executable(
@@ -64,6 +64,9 @@ add_custom_target(copy-files ALL
         ${CMAKE_CURRENT_BINARY_DIR}/test_data
         )
 add_dependencies(${TEST_MODULE} copy-files)
+
+# Ensure test-data is always available for the generator
+add_dependencies(generator copy-files)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include(CTest)

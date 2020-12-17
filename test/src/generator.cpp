@@ -15,6 +15,9 @@ using FileMap = std::map<int, std::vector<std::string>>;
 
 int extract_id(const fs::path& path) {
   auto s = path.filename().string();
+  if(s.find("skip") != std::string::npos){
+    return -1;
+  }
   auto split = s.find('_');
   if(split == std::string::npos){
     return -1;

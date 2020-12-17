@@ -44,9 +44,8 @@ inner:
     printf("done\n");
 }
 
-void main()
-{
-    fred();
-    joe();
-    henry();
-}
+fred();
+joe();
+henry();
+
+void main() { }

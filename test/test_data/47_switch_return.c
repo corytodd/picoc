@@ -12,12 +12,9 @@ void fred(int x)
     printf("out\n");
 }
 
-int main()
-{
-    fred(1);
-    fred(2);
-    fred(3);
-    
-    return 0;
-}    
+fred(1);
+fred(2);
+fred(3);
+
+int main() {} 
 
