@@ -18,6 +18,7 @@ void func_1(void)
     printf("d=%d\n", d);
 }
 
-func_1();
-	
-void main() { }
+void main()
+{
+    func_1();
+}

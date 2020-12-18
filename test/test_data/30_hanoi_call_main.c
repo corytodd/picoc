@@ -98,21 +98,25 @@ Hanoi(int n,int *source, int *dest, int *spare)
 	return;
 }
 
-int i;
 
-/* initialize the towers */
-for(i=0;i<N;i++)A[i]=i+1;
-for(i=0;i<N;i++)B[i]=0;
-for(i=0;i<N;i++)C[i]=0;
+int
+main()
+{
+	int i;
 
-printf("Solution of Tower of Hanoi Problem with %d Disks\n\n",N);
+	/* initialize the towers */
+	for(i=0;i<N;i++)A[i]=i+1;
+	for(i=0;i<N;i++)B[i]=0;
+	for(i=0;i<N;i++)C[i]=0;
 
-/* Print the starting state */
-printf("Starting state:\n");
-PrintAll();
-printf("\n\nSubsequent states:\n\n");
+	printf("Solution of Tower of Hanoi Problem with %d Disks\n\n",N);
 
-/* Do it! Use A = Source, B = Destination, C = Spare */
-Hanoi(N,A,B,C);
+	/* Print the starting state */
+	printf("Starting state:\n");
+	PrintAll();
+	printf("\n\nSubsequent states:\n\n");
 
-int main() { }
+	/* Do it! Use A = Source, B = Destination, C = Spare */
+	Hanoi(N,A,B,C);
+	return 0;
+}

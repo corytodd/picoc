@@ -9,7 +9,3 @@ be a distinct header and implementation pair.
 
 Create a types.h that puts all the typedefs in one place. This will make platform porting easier so 
 stray defs don't cause surprises.
-
-## Testing
-
-As mentioned in the readme, we need the tests ported to gtest before we make any major architecture changes.
