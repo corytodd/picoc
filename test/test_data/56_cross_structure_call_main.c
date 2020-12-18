@@ -12,5 +12,7 @@ struct s1
     struct s2 *s;
 };
 
-printf("ok\n");
-	
+void main()
+{
+    printf("ok\n");
+}

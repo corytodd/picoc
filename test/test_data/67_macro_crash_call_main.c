@@ -6,6 +6,7 @@ void printArray(void) {
     printf("4: %d\n", array[4]);
 }
 
-printArray();
-	
-void main() { }
+void main()
+{
+    printArray();
+}

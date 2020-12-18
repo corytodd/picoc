@@ -44,36 +44,37 @@ void quicksort(int left, int right)
     quicksort(index + 1, right);
 }
  
-int i;
+void main()
+{
+    int i;
 
-array[0] = 62;
-array[1] = 83;
-array[2] = 4;
-array[3] = 89;
-array[4] = 36;
-array[5] = 21;
-array[6] = 74;
-array[7] = 37;
-array[8] = 65;
-array[9] = 33;
-array[10] = 96;
-array[11] = 38;
-array[12] = 53;
-array[13] = 16;
-array[14] = 74;
-array[15] = 55;
+    array[0] = 62;
+    array[1] = 83;
+    array[2] = 4;
+    array[3] = 89;
+    array[4] = 36;
+    array[5] = 21;
+    array[6] = 74;
+    array[7] = 37;
+    array[8] = 65;
+    array[9] = 33;
+    array[10] = 96;
+    array[11] = 38;
+    array[12] = 53;
+    array[13] = 16;
+    array[14] = 74;
+    array[15] = 55;
 
-for (i = 0; i < 16; i++)
-	printf("%d ", array[i]);
+    for (i = 0; i < 16; i++)
+        printf("%d ", array[i]);
 
-printf("\n");
+    printf("\n");
 
-quicksort(0, 15);
+    quicksort(0, 15);
 
-for (i = 0; i < 16; i++)
-	printf("%d ", array[i]);
+    for (i = 0; i < 16; i++)
+        printf("%d ", array[i]);
 
-printf("\n"); 
- 
-void main(){ }
+    printf("\n");
+}
 
