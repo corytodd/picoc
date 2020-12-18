@@ -6,8 +6,8 @@ libraries. My current goals:
 - [x] Get POC working on my hardware
 - [x] Port to CMake
 - [x] Prefix all files to avoid object name collisions
-- [ ] Port tests to gtest
-- [ ] Get better abstraction hooks in place for malloc and friends
+- [x] Port tests to gtest
+- [x] Get better abstraction hooks in place for malloc and friends
 - [ ] Cleanup the Picoc struct to see if we can save more memory
 - [ ] Review the recursive descent parser for memory savings
 - [ ] See if debugging support can be added for my platform
