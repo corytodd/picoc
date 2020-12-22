@@ -22,7 +22,7 @@ char* PlatformGetLine(char* Buf, int MaxLen, const char* Prompt) {
         printf("%s", Prompt);
     }
 
-    fflush(l_PicocIO->pStdout);
+    fflush(stdout);
     return fgets(Buf, MaxLen, stdin);
 }
 
