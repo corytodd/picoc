@@ -134,14 +134,12 @@ static struct ReservedWord ReservedWords[] = {
 
 /* initialize the lexer */
 void LexInit(Picoc* pc) {
-    int Count;
-
     TableInitTable(&pc->ReservedWordTable, &pc->ReservedWordHashTable[0],
                    sizeof(ReservedWords) / sizeof(struct ReservedWord) * 2, true);
 
-    for(Count = 0; Count < sizeof(ReservedWords) / sizeof(struct ReservedWord); Count++) {
-        TableSet(pc, &pc->ReservedWordTable, TableStrRegister(pc, ReservedWords[Count].Word),
-                 (struct Value*)&ReservedWords[Count], NULL, 0, 0);
+    for(int count = 0; count < sizeof(ReservedWords) / sizeof(struct ReservedWord); count++) {
+        TableSet(pc, &pc->ReservedWordTable, TableStrRegister(pc, ReservedWords[count].Word),
+                 (struct Value*)&ReservedWords[count], NULL, 0, 0);
     }
 
     pc->LexValue.Typ = NULL;
@@ -155,31 +153,31 @@ void LexInit(Picoc* pc) {
 
 /* deallocate */
 void LexCleanup(Picoc* pc) {
-    int Count;
 
     LexInteractiveClear(pc, NULL);
 
-    for(Count = 0; Count < sizeof(ReservedWords) / sizeof(struct ReservedWord); Count++)
-        TableDelete(pc, &pc->ReservedWordTable, TableStrRegister(pc, ReservedWords[Count].Word));
+    for(int count = 0; count < sizeof(ReservedWords) / sizeof(struct ReservedWord); count++) {
+        TableDelete(pc, &pc->ReservedWordTable, TableStrRegister(pc, ReservedWords[count].Word));
+    }
 }
 
 /* check if a word is a reserved word - used while scanning */
 enum LexToken LexCheckReservedWord(Picoc* pc, const char* Word) {
-    struct Value* val;
+    struct Value* val = NULL;
 
-    if(TableGet(&pc->ReservedWordTable, Word, &val, NULL, NULL, NULL))
+    if(TableGet(&pc->ReservedWordTable, Word, &val, NULL, NULL, NULL)) {
         return ((struct ReservedWord*)val)->Token;
-    else
-        return TokenNone;
+    }
+    return TokenNone;
 }
 
 /* get a numeric literal - used while scanning */
 enum LexToken LexGetNumber(Picoc* pc, struct LexState* Lexer, struct Value* Value) {
-    long Result = 0;
-    long Base = 10;
-    enum LexToken ResultToken;
-    double FPResult;
-    double FPDiv;
+    long result = 0;
+    long base = 10;
+    enum LexToken resultToken = 0;
+    double fpResult = NAN;
+    double fpDiv = NAN;
     /* long/unsigned flags */
 #if 0 /* unused for now */
     char IsLong = 0;
@@ -191,19 +189,21 @@ enum LexToken LexGetNumber(Picoc* pc, struct LexState* Lexer, struct Value* Valu
         LEXER_INC(Lexer);
         if(Lexer->Pos != Lexer->End) {
             if(*Lexer->Pos == 'x' || *Lexer->Pos == 'X') {
-                Base = 16;
+                base = 16;
                 LEXER_INC(Lexer);
             } else if(*Lexer->Pos == 'b' || *Lexer->Pos == 'B') {
-                Base = 2;
+                base = 2;
                 LEXER_INC(Lexer);
-            } else if(*Lexer->Pos != '.')
-                Base = 8;
+            } else if(*Lexer->Pos != '.') {
+                base = 8;
+            }
         }
     }
 
     /* get the value */
-    for(; Lexer->Pos != Lexer->End && IS_BASE_DIGIT(*Lexer->Pos, Base); LEXER_INC(Lexer))
-        Result = Result * Base + GET_BASE_DIGIT(*Lexer->Pos);
+    for(; Lexer->Pos != Lexer->End && IS_BASE_DIGIT(*Lexer->Pos, base); LEXER_INC(Lexer)) {
+        result = result * base + GET_BASE_DIGIT(*Lexer->Pos);
+    }
 
     if(*Lexer->Pos == 'u' || *Lexer->Pos == 'U') {
         LEXER_INC(Lexer);
@@ -215,72 +215,74 @@ enum LexToken LexGetNumber(Picoc* pc, struct LexState* Lexer, struct Value* Valu
     }
 
     Value->Typ = &pc->LongType; /* ignored? */
-    Value->Val->LongInteger = Result;
+    Value->Val->LongInteger = result;
 
-    ResultToken = TokenIntegerConstant;
-
-    if(Lexer->Pos == Lexer->End)
-        return ResultToken;
+    resultToken = TokenIntegerConstant;
 
     if(Lexer->Pos == Lexer->End) {
-        return ResultToken;
+        return resultToken;
+    }
+
+    if(Lexer->Pos == Lexer->End) {
+        return resultToken;
     }
 
     if(*Lexer->Pos != '.' && *Lexer->Pos != 'e' && *Lexer->Pos != 'E') {
-        return ResultToken;
+        return resultToken;
     }
 
     Value->Typ = &pc->FPType;
-    FPResult = (double)Result;
+    fpResult = (double)result;
 
     if(*Lexer->Pos == '.') {
         LEXER_INC(Lexer);
-        for(FPDiv = 1.0 / Base; Lexer->Pos != Lexer->End && IS_BASE_DIGIT(*Lexer->Pos, Base);
-            LEXER_INC(Lexer), FPDiv /= (double)Base) {
-            FPResult += GET_BASE_DIGIT(*Lexer->Pos) * FPDiv;
+        for(fpDiv = 1.0 / base; Lexer->Pos != Lexer->End && IS_BASE_DIGIT(*Lexer->Pos, base);
+            LEXER_INC(Lexer), fpDiv /= (double)base) {
+            fpResult += GET_BASE_DIGIT(*Lexer->Pos) * fpDiv;
         }
     }
 
     if(Lexer->Pos != Lexer->End && (*Lexer->Pos == 'e' || *Lexer->Pos == 'E')) {
-        int ExponentSign = 1;
+        int exponentSign = 1;
 
         LEXER_INC(Lexer);
         if(Lexer->Pos != Lexer->End && *Lexer->Pos == '-') {
-            ExponentSign = -1;
+            exponentSign = -1;
             LEXER_INC(Lexer);
         }
 
-        Result = 0;
-        while(Lexer->Pos != Lexer->End && IS_BASE_DIGIT(*Lexer->Pos, Base)) {
-            Result = Result * Base + GET_BASE_DIGIT(*Lexer->Pos);
+        result = 0;
+        while(Lexer->Pos != Lexer->End && IS_BASE_DIGIT(*Lexer->Pos, base)) {
+            result = result * base + GET_BASE_DIGIT(*Lexer->Pos);
             LEXER_INC(Lexer);
         }
 
-        FPResult *= pow((double)Base, (double)Result * ExponentSign);
+        fpResult *= pow((double)base, (double)result * exponentSign);
     }
 
-    Value->Val->FP = FPResult;
+    Value->Val->FP = fpResult;
 
-    if(*Lexer->Pos == 'f' || *Lexer->Pos == 'F')
+    if(*Lexer->Pos == 'f' || *Lexer->Pos == 'F') {
         LEXER_INC(Lexer);
+    }
 
     return TokenFPConstant;
 }
 
 /* get a reserved word or identifier - used while scanning */
 enum LexToken LexGetWord(Picoc* pc, struct LexState* Lexer, struct Value* Value) {
-    const char* StartPos = Lexer->Pos;
-    enum LexToken Token;
+    const char* startPos = Lexer->Pos;
+    enum LexToken token = 0;
 
     do {
         LEXER_INC(Lexer);
     } while(Lexer->Pos != Lexer->End && isCident((int)*Lexer->Pos));
 
     Value->Typ = NULL;
-    Value->Val->Identifier = TableStrRegister2(pc, StartPos, Lexer->Pos - StartPos);
+    Value->Val->Identifier = TableStrRegister2(pc, startPos, Lexer->Pos - startPos);
 
-    Token = LexCheckReservedWord(pc, Value->Val->Identifier);
-    switch(Token) {
+    token = LexCheckReservedWord(pc, Value->Val->Identifier);
+    switch(token) {
         case TokenHashInclude:
             Lexer->Mode = LexModeHashInclude;
             break;
@@ -291,44 +293,51 @@ enum LexToken LexGetWord(Picoc* pc, struct LexState* Lexer, struct Value* Value)
             break;
     }
 
-    if(Token != TokenNone)
-        return Token;
+    if(token != TokenNone) {
+        return token;
+    }
 
-    if(Lexer->Mode == LexModeHashDefineSpace)
+    if(Lexer->Mode == LexModeHashDefineSpace) {
         Lexer->Mode = LexModeHashDefineSpaceIdent;
+    }
 
     return TokenIdentifier;
 }
 
 /* unescape a character from an octal character constant */
 unsigned char LexUnEscapeCharacterConstant(const char** From, unsigned char FirstChar, int Base) {
-    int CCount;
-    unsigned char Total = GET_BASE_DIGIT(FirstChar);
-    for(CCount = 0; IS_BASE_DIGIT(**From, Base) && CCount < 2; CCount++, (*From)++)
-        Total = Total * Base + GET_BASE_DIGIT(**From);
+    int charCount;
+    unsigned char total = GET_BASE_DIGIT(FirstChar);
+    for(charCount = 0; IS_BASE_DIGIT(**From, Base) && charCount < 2; charCount++, (*From)++) {
+        total = total * Base + GET_BASE_DIGIT(**From);
+    }
 
-    return Total;
+    return total;
 }
 
 /* unescape a character from a string or character constant */
 unsigned char LexUnEscapeCharacter(const char** From, const char* End) {
     unsigned char ThisChar;
 
-    while(*From != End && **From == '\\' && &(*From)[1] != End && (*From)[1] == '\n')
+    while(*From != End && **From == '\\' && &(*From)[1] != End && (*From)[1] == '\n') {
         (*From) += 2; /* skip escaped end of lines with LF line termination */
+    }
 
     while(*From != End && **From == '\\' && &(*From)[1] != End && &(*From)[2] != End && (*From)[1] == '\r' &&
-          (*From)[2] == '\n')
+          (*From)[2] == '\n') {
         (*From) += 3; /* skip escaped end of lines with CR/LF line termination */
+    }
 
-    if(*From == End)
+    if(*From == End) {
         return '\\';
+    }
 
     if(**From == '\\') {
         /* it's escaped */
         (*From)++;
-        if(*From == End)
+        if(*From == End) {
             return '\\';
+        }
 
         ThisChar = *(*From)++;
         switch(ThisChar) {
@@ -547,9 +556,9 @@ enum LexToken LexScanGetToken(Picoc* pc, struct LexState* Lexer, struct Value** 
                 NEXTIS('=', TokenModulusAssign, TokenModulus);
                 break;
             case '<':
-                if(Lexer->Mode == LexModeHashInclude)
+                if(Lexer->Mode == LexModeHashInclude) {
                     GotToken = LexGetStringConstant(pc, Lexer, *Value, '>');
-                else {
+                } else {
                     NEXTIS3PLUS('=', TokenLessEqual, '<', TokenShiftLeft, '=', TokenShiftLeftAssign, TokenLessThan);
                 }
                 break;
@@ -603,8 +612,9 @@ enum LexToken LexScanGetToken(Picoc* pc, struct LexState* Lexer, struct Value** 
                 if(NextChar == ' ' || NextChar == '\n') {
                     LEXER_INC(Lexer);
                     LexSkipLineCont(Lexer, NextChar);
-                } else
+                } else {
                     LexFail(pc, Lexer, "illegal character '%c'", ThisChar);
+                }
                 break;
             default:
                 LexFail(pc, Lexer, "illegal character '%c'", ThisChar);

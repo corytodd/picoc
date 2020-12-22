@@ -19,8 +19,7 @@ void ShowBigList(Picoc* pc) {
 
 /* initialize the stack and heap storage */
 void HeapInit(Picoc* pc, int StackOrHeapSize) {
-    int Count;
-    int AlignOffset = 0;
+    int alignOffset = 0;
 
     pc->HeapMemorySize = StackOrHeapSize;
     pc->HeapMemory = PICOC_FN_MALLOC(StackOrHeapSize);
@@ -28,16 +27,18 @@ void HeapInit(Picoc* pc, int StackOrHeapSize) {
     pc->StackFrame = NULL;   /* the current stack frame */
     pc->HeapStackTop = NULL; /* the top of the stack */
 
-    while(((unsigned long)&pc->HeapMemory[AlignOffset] & (sizeof(PICOC_ALIGN_TYPE) - 1)) != 0)
-        AlignOffset++;
+    while(((unsigned long)&pc->HeapMemory[alignOffset] & (sizeof(PICOC_ALIGN_TYPE) - 1)) != 0) {
+        alignOffset++;
+    }
 
-    pc->StackFrame = &(pc->HeapMemory)[AlignOffset];
-    pc->HeapStackTop = &(pc->HeapMemory)[AlignOffset];
+    pc->StackFrame = &(pc->HeapMemory)[alignOffset];
+    pc->HeapStackTop = &(pc->HeapMemory)[alignOffset];
     *(void**)(pc->StackFrame) = NULL;
-    pc->HeapBottom = &(pc->HeapMemory)[StackOrHeapSize - sizeof(PICOC_ALIGN_TYPE) + AlignOffset];
+    pc->HeapBottom = &(pc->HeapMemory)[StackOrHeapSize - sizeof(PICOC_ALIGN_TYPE) + alignOffset];
     pc->FreeListBig = NULL;
-    for(Count = 0; Count < FREELIST_BUCKETS; Count++)
-        pc->FreeListBucket[Count] = NULL;
+    for(int count = 0; count < FREELIST_BUCKETS; count++) {
+        pc->FreeListBucket[count] = NULL;
+    }
 }
 
 void HeapCleanup(Picoc* pc) { PICOC_FN_FREE(pc->HeapMemory); }
@@ -45,17 +46,18 @@ void HeapCleanup(Picoc* pc) { PICOC_FN_FREE(pc->HeapMemory); }
 /* allocate some space on the stack, in the current stack frame
  * clears memory. can return NULL if out of stack space */
 void* HeapAllocStack(Picoc* pc, int Size) {
-    char* NewMem = pc->HeapStackTop;
-    char* NewTop = (char*)pc->HeapStackTop + MEM_ALIGN(Size);
+    char* newMem = pc->HeapStackTop;
+    char* newTop = (char*)pc->HeapStackTop + MEM_ALIGN(Size);
 #ifdef PICOC_DEBUG_HEAP
     printf("HeapAllocStack(%ld) at 0x%lx\n", (unsigned long)MEM_ALIGN(Size), (unsigned long)pc->HeapStackTop);
 #endif
-    if(NewTop > (char*)pc->HeapBottom)
+    if(newTop > (char*)pc->HeapBottom) {
         return NULL;
+    }
 
-    pc->HeapStackTop = (void*)NewTop;
-    memset((void*)NewMem, '\0', Size);
-    return NewMem;
+    pc->HeapStackTop = (void*)newTop;
+    memset((void*)newMem, '\0', Size);
+    return newMem;
 }
 
 /* allocate some space on the stack, in the current stack frame */
@@ -68,15 +70,16 @@ void HeapUnpopStack(Picoc* pc, int Size) {
 
 /* free some space at the top of the stack */
 int HeapPopStack(Picoc* pc, void* Addr, int Size) {
-    int ToLose = MEM_ALIGN(Size);
-    if(ToLose > ((char*)pc->HeapStackTop - (char*)&(pc->HeapMemory)[0]))
+    int toLose = MEM_ALIGN(Size);
+    if(toLose > ((char*)pc->HeapStackTop - (char*)&(pc->HeapMemory)[0])) {
         return false;
+    }
 
 #ifdef PICOC_DEBUG_HEAP
     printf("HeapPopStack(0x%lx, %ld) back to 0x%lx\n", (unsigned long)Addr, (unsigned long)MEM_ALIGN(Size),
            (unsigned long)pc->HeapStackTop - ToLose);
 #endif
-    pc->HeapStackTop = (void*)((char*)pc->HeapStackTop - ToLose);
+    pc->HeapStackTop = (void*)((char*)pc->HeapStackTop - toLose);
     assert(Addr == NULL || pc->HeapStackTop == Addr);
 
     return true;
@@ -102,8 +105,8 @@ int HeapPopStackFrame(Picoc* pc) {
         printf("Popping stack frame back to 0x%lx\n", (unsigned long)pc->HeapStackTop);
 #endif
         return true;
-    } else
-        return false;
+    }
+    return false;
 }
 
 /* allocate some dynamically allocated memory. memory is cleared.

@@ -146,6 +146,7 @@ struct LibraryFunction StringFunctions[] = {
 /* creates various system-dependent definitions */
 void StringSetupFunc(Picoc* pc) {
     /* define NULL */
-    if(!VariableDefined(pc, TableStrRegister(pc, "NULL")))
+    if(!VariableDefined(pc, TableStrRegister(pc, "NULL"))) {
         VariableDefinePlatformVar(pc, NULL, "NULL", &pc->IntType, (union AnyValue*)&String_ZeroValue, false);
+    }
 }

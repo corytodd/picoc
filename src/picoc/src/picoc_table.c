@@ -15,18 +15,19 @@ void TableInit(Picoc* pc) {
 
 /* hash function for strings */
 unsigned int TableHash(const char* Key, int Len) {
-    unsigned int Hash = Len;
-    int Offset;
-    int Count;
+    unsigned int hash = Len;
+    int offset;
+    int count;
 
-    for(Count = 0, Offset = 8; Count < Len; Count++, Offset += 7) {
-        if(Offset > sizeof(unsigned int) * 8 - 7)
-            Offset -= sizeof(unsigned int) * 8 - 6;
+    for(count = 0, offset = 8; count < Len; count++, offset += 7) {
+        if(offset > sizeof(unsigned int) * 8 - 7) {
+            offset -= sizeof(unsigned int) * 8 - 6;
+        }
 
-        Hash ^= *Key++ << Offset;
+        hash ^= *Key++ << offset;
     }
 
-    return Hash;
+    return hash;
 }
 
 /* initialize a table */
@@ -40,15 +41,16 @@ void TableInitTable(struct Table* Tbl, struct TableEntry** HashTable, int Size, 
 /* check a hash table entry for a key */
 struct TableEntry* TableSearch(struct Table* Tbl, const char* Key, int* AddAt) {
     /* shared strings have unique addresses so we don't need to hash them */
-    int HashValue = ((unsigned long)Key) % Tbl->Size;
-    struct TableEntry* Entry;
+    int hashValue = ((unsigned long)Key) % Tbl->Size;
+    struct TableEntry* entry = NULL;
 
-    for(Entry = Tbl->HashTable[HashValue]; Entry != NULL; Entry = Entry->Next) {
-        if(Entry->p.v.Key == Key)
-            return Entry; /* found */
+    for(entry = Tbl->HashTable[hashValue]; entry != NULL; entry = entry->Next) {
+        if(entry->p.v.Key == Key) {
+            return entry; /* found */
+        }
     }
 
-    *AddAt = HashValue; /* didn't find it in the chain */
+    *AddAt = hashValue; /* didn't find it in the chain */
     return NULL;
 }
 
@@ -56,18 +58,18 @@ struct TableEntry* TableSearch(struct Table* Tbl, const char* Key, int* AddAt) {
  * Key must be a shared string from TableStrRegister() */
 int TableSet(Picoc* pc, struct Table* Tbl, char* Key, struct Value* Val, const char* DeclFileName, int DeclLine,
              int DeclColumn) {
-    int AddAt;
-    struct TableEntry* FoundEntry = TableSearch(Tbl, Key, &AddAt);
+    int addAt = 0;
+    struct TableEntry* foundEntry = TableSearch(Tbl, Key, &addAt);
 
-    if(FoundEntry == NULL) { /* add it to the table */
-        struct TableEntry* NewEntry = VariableAlloc(pc, NULL, sizeof(struct TableEntry), Tbl->OnHeap);
-        NewEntry->DeclFileName = DeclFileName;
-        NewEntry->DeclLine = DeclLine;
-        NewEntry->DeclColumn = DeclColumn;
-        NewEntry->p.v.Key = Key;
-        NewEntry->p.v.Val = Val;
-        NewEntry->Next = Tbl->HashTable[AddAt];
-        Tbl->HashTable[AddAt] = NewEntry;
+    if(foundEntry == NULL) { /* add it to the table */
+        struct TableEntry* newEntry = VariableAlloc(pc, NULL, sizeof(struct TableEntry), Tbl->OnHeap);
+        newEntry->DeclFileName = DeclFileName;
+        newEntry->DeclLine = DeclLine;
+        newEntry->DeclColumn = DeclColumn;
+        newEntry->p.v.Key = Key;
+        newEntry->p.v.Val = Val;
+        newEntry->Next = Tbl->HashTable[addAt];
+        Tbl->HashTable[addAt] = newEntry;
         return true;
     }
 
@@ -78,17 +80,18 @@ int TableSet(Picoc* pc, struct Table* Tbl, char* Key, struct Value* Val, const c
  * Key must be a shared string from TableStrRegister() */
 int TableGet(struct Table* Tbl, const char* Key, struct Value** Val, const char** DeclFileName, int* DeclLine,
              int* DeclColumn) {
-    int AddAt;
-    struct TableEntry* FoundEntry = TableSearch(Tbl, Key, &AddAt);
-    if(FoundEntry == NULL)
+    int addAt = 0;
+    struct TableEntry* foundEntry = TableSearch(Tbl, Key, &addAt);
+    if(foundEntry == NULL) {
         return false;
+    }
 
-    *Val = FoundEntry->p.v.Val;
+    *Val = foundEntry->p.v.Val;
 
     if(DeclFileName != NULL) {
-        *DeclFileName = FoundEntry->DeclFileName;
-        *DeclLine = FoundEntry->DeclLine;
-        *DeclColumn = FoundEntry->DeclColumn;
+        *DeclFileName = foundEntry->DeclFileName;
+        *DeclLine = foundEntry->DeclLine;
+        *DeclColumn = foundEntry->DeclColumn;
     }
 
     return true;
@@ -97,14 +100,14 @@ int TableGet(struct Table* Tbl, const char* Key, struct Value** Val, const char*
 /* remove an entry from the table */
 struct Value* TableDelete(Picoc* pc, struct Table* Tbl, const char* Key) {
     /* shared strings have unique addresses so we don't need to hash them */
-    int HashValue = ((unsigned long)Key) % Tbl->Size;
-    struct TableEntry** EntryPtr;
+    int hashValue = ((unsigned long)Key) % Tbl->Size;
+    struct TableEntry** entryPtr;
 
-    for(EntryPtr = &Tbl->HashTable[HashValue]; *EntryPtr != NULL; EntryPtr = &(*EntryPtr)->Next) {
-        if((*EntryPtr)->p.v.Key == Key) {
-            struct TableEntry* DeleteEntry = *EntryPtr;
+    for(entryPtr = &Tbl->HashTable[hashValue]; *entryPtr != NULL; entryPtr = &(*entryPtr)->Next) {
+        if((*entryPtr)->p.v.Key == Key) {
+            struct TableEntry* DeleteEntry = *entryPtr;
             struct Value* Val = DeleteEntry->p.v.Val;
-            *EntryPtr = DeleteEntry->Next;
+            *entryPtr = DeleteEntry->Next;
             HeapFreeMem(pc, DeleteEntry);
 
             return Val;
@@ -116,39 +119,41 @@ struct Value* TableDelete(Picoc* pc, struct Table* Tbl, const char* Key) {
 
 /* check a hash table entry for an identifier */
 struct TableEntry* TableSearchIdentifier(struct Table* Tbl, const char* Key, int Len, int* AddAt) {
-    int HashValue = TableHash(Key, Len) % Tbl->Size;
-    struct TableEntry* Entry;
+    int hashValue = TableHash(Key, Len) % Tbl->Size;
+    struct TableEntry* entry = NULL;
 
-    for(Entry = Tbl->HashTable[HashValue]; Entry != NULL; Entry = Entry->Next) {
-        if(strncmp(&Entry->p.Key[0], (char*)Key, Len) == 0 && Entry->p.Key[Len] == '\0')
-            return Entry; /* found */
+    for(entry = Tbl->HashTable[hashValue]; entry != NULL; entry = entry->Next) {
+        if(strncmp(&entry->p.Key[0], (char*)Key, Len) == 0 && entry->p.Key[Len] == '\0') {
+            return entry; /* found */
+        }
     }
 
-    *AddAt = HashValue; /* didn't find it in the chain */
+    *AddAt = hashValue; /* didn't find it in the chain */
     return NULL;
 }
 
 /* set an identifier and return the identifier. share if possible */
 char* TableSetIdentifier(Picoc* pc, struct Table* Tbl, const char* Ident, int IdentLen) {
-    int AddAt;
-    struct TableEntry* FoundEntry = TableSearchIdentifier(Tbl, Ident, IdentLen, &AddAt);
+    int addAt = 0;
+    struct TableEntry* foundEntry = TableSearchIdentifier(Tbl, Ident, IdentLen, &addAt);
 
-    if(FoundEntry != NULL)
-        return &FoundEntry->p.Key[0];
-    else {
-        /* add it to the table - we economise by not allocating
-            the whole structure here */
-        struct TableEntry* NewEntry =
-            HeapAllocMem(pc, sizeof(struct TableEntry) - sizeof(union TableEntryPayload) + IdentLen + 1);
-        if(NewEntry == NULL)
-            ProgramFailNoParser(pc, "(TableSetIdentifier) out of memory");
-
-        strncpy((char*)&NewEntry->p.Key[0], (char*)Ident, IdentLen);
-        NewEntry->p.Key[IdentLen] = '\0';
-        NewEntry->Next = Tbl->HashTable[AddAt];
-        Tbl->HashTable[AddAt] = NewEntry;
-        return &NewEntry->p.Key[0];
+    if(foundEntry != NULL) {
+        return &foundEntry->p.Key[0];
     }
+
+    /* add it to the table - we economise by not allocating
+            the whole structure here */
+    struct TableEntry* newEntry =
+        HeapAllocMem(pc, sizeof(struct TableEntry) - sizeof(union TableEntryPayload) + IdentLen + 1);
+    if(newEntry == NULL) {
+        ProgramFailNoParser(pc, "(TableSetIdentifier) out of memory");
+    }
+
+    strncpy((char*)&newEntry->p.Key[0], (char*)Ident, IdentLen);
+    newEntry->p.Key[IdentLen] = '\0';
+    newEntry->Next = Tbl->HashTable[addAt];
+    Tbl->HashTable[addAt] = newEntry;
+    return &newEntry->p.Key[0];
 }
 
 /* register a string in the shared string store */
@@ -160,14 +165,14 @@ char* TableStrRegister(Picoc* pc, const char* Str) { return TableStrRegister2(pc
 
 /* free all the strings */
 void TableStrFree(Picoc* pc) {
-    int Count;
-    struct TableEntry* Entry;
-    struct TableEntry* NextEntry;
+    int count = 0;
+    struct TableEntry* entry = NULL;
+    struct TableEntry* nextEntry = NULL;
 
-    for(Count = 0; Count < pc->StringTable.Size; Count++) {
-        for(Entry = pc->StringTable.HashTable[Count]; Entry != NULL; Entry = NextEntry) {
-            NextEntry = Entry->Next;
-            HeapFreeMem(pc, Entry);
+    for(count = 0; count < pc->StringTable.Size; count++) {
+        for(entry = pc->StringTable.HashTable[count]; entry != NULL; entry = nextEntry) {
+            nextEntry = entry->Next;
+            HeapFreeMem(pc, entry);
         }
     }
 }

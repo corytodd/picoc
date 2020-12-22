@@ -429,8 +429,9 @@ extern char* optarg;
 extern int optind, opterr, optopt;
 void UnistdSetupFunc(Picoc* pc) {
     /* define NULL */
-    if(!VariableDefined(pc, TableStrRegister(pc, "NULL")))
+    if(!VariableDefined(pc, TableStrRegister(pc, "NULL"))) {
         VariableDefinePlatformVar(pc, NULL, "NULL", &pc->IntType, (union AnyValue*)&ZeroValue, false);
+    }
 
     /* define optarg and friends */
     VariableDefinePlatformVar(pc, NULL, "optarg", pc->CharPtrType, (union AnyValue*)&optarg, true);

@@ -4,6 +4,7 @@
 
 /* endian-ness checking */
 static const int __ENDIAN_CHECK__ = 1;
+// TODO make endianess a field in PC to avoid storing state
 static int BigEndian;
 static int LittleEndian;
 
@@ -24,23 +25,22 @@ void LibraryInit(Picoc* pc) {
 
 /* add a library */
 void LibraryAdd(Picoc* pc, struct LibraryFunction* FuncList) {
-    struct ParseState Parser;
-    int Count;
-    char* Identifier;
-    struct ValueType* ReturnType;
-    struct Value* NewValue;
-    void* Tokens;
-    char* IntrinsicName = TableStrRegister(pc, "c library");
+    struct ParseState parser;
+    char* identifier = NULL;
+    struct ValueType* returnType = NULL;
+    struct Value* newValue = NULL;
+    void* tokens = NULL;
+    char* intrinsicName = TableStrRegister(pc, "c library");
 
     /* read all the library definitions */
-    for(Count = 0; FuncList[Count].Prototype != NULL; Count++) {
-        Tokens = LexAnalyse(pc, (const char*)IntrinsicName, FuncList[Count].Prototype,
-                            strlen((char*)FuncList[Count].Prototype), NULL);
-        LexInitParser(&Parser, pc, FuncList[Count].Prototype, Tokens, IntrinsicName, true, false);
-        TypeParse(&Parser, &ReturnType, &Identifier, NULL);
-        NewValue = ParseFunctionDefinition(&Parser, ReturnType, Identifier);
-        NewValue->Val->FuncDef.Intrinsic = FuncList[Count].Func;
-        HeapFreeMem(pc, Tokens);
+    for(int count = 0; FuncList[count].Prototype != NULL; count++) {
+        tokens = LexAnalyse(pc, (const char*)intrinsicName, FuncList[count].Prototype,
+                            strlen((char*)FuncList[count].Prototype), NULL);
+        LexInitParser(&parser, pc, FuncList[count].Prototype, tokens, intrinsicName, true, false);
+        TypeParse(&parser, &returnType, &identifier, NULL);
+        newValue = ParseFunctionDefinition(&parser, returnType, identifier);
+        newValue->Val->FuncDef.Intrinsic = FuncList[count].Func;
+        HeapFreeMem(pc, tokens);
     }
 }
 
@@ -84,15 +84,17 @@ void PrintType(struct ValueType* Typ, IOFILE* Stream) {
             PrintStr("macro", Stream);
             break;
         case TypePointer:
-            if(Typ->FromType)
+            if(Typ->FromType) {
                 PrintType(Typ->FromType, Stream);
+            }
             PrintCh('*', Stream);
             break;
         case TypeArray:
             PrintType(Typ->FromType, Stream);
             PrintCh('[', Stream);
-            if(Typ->ArraySize != 0)
+            if(Typ->ArraySize != 0) {
                 PrintSimpleInt(Typ->ArraySize, Stream);
+            }
             PrintCh(']', Stream);
             break;
         case TypeStruct:

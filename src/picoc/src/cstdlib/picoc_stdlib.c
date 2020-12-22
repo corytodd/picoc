@@ -146,6 +146,7 @@ struct LibraryFunction StdlibFunctions[] = {{StdlibAtof, "float atof(char *);"},
 /* creates various system-dependent definitions */
 void StdlibSetupFunc(Picoc* pc) {
     /* define NULL, TRUE and FALSE */
-    if(!VariableDefined(pc, TableStrRegister(pc, "NULL")))
+    if(!VariableDefined(pc, TableStrRegister(pc, "NULL"))) {
         VariableDefinePlatformVar(pc, NULL, "NULL", &pc->IntType, (union AnyValue*)&Stdlib_ZeroValue, false);
+    }
 }

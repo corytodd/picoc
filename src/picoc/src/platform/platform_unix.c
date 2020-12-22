@@ -54,8 +54,9 @@ char* PlatformGetLine(char* Buf, int MaxLen, const char* Prompt) {
     }
 #endif
 
-    if(Prompt != NULL)
+    if(Prompt != NULL) {
         printf("%s", Prompt);
+    }
 
     fflush(stdout);
     return fgets(Buf, MaxLen, stdin);
@@ -78,20 +79,24 @@ char* PlatformReadFile(Picoc* pc, const char* FileName) {
     int BytesRead;
     char* p;
 
-    if(stat(FileName, &FileInfo))
+    if(stat(FileName, &FileInfo)) {
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+    }
 
     ReadText = malloc(FileInfo.st_size + 1);
-    if(ReadText == NULL)
+    if(ReadText == NULL) {
         ProgramFailNoParser(pc, "out of memory\n");
+    }
 
     InFile = fopen(FileName, "r");
-    if(InFile == NULL)
+    if(InFile == NULL) {
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+    }
 
     BytesRead = fread(ReadText, 1, FileInfo.st_size, InFile);
-    if(BytesRead == 0)
+    if(BytesRead == 0) {
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+    }
 
     ReadText[BytesRead] = '\0';
     fclose(InFile);
