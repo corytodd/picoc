@@ -1,3 +1,13 @@
-Checks:          '*,-hicpp-*,-llvm-header-guard,-google-build-using-namespace,-clang-analyzer-alpha.clone.CloneChecker,-google-runtime-int,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-clang-analyzer-alpha.deadcode.UnreachableCode,-misc-use-after-move,-cppcoreguidelines-pro-type-vararg,-modernize-use-emplace,-cert-err60-cpp,-modernize-use-trailing-return-type,-fuchsia-default-arguments-calls,-fuchsia-overloaded-operator,-readability-magic-numbers,-cppcoreguidelines-avoid-magic-numbers'
+#
+Checks:          '*,-hicpp-*,-llvm-header-guard,-google-build-using-namespace,-clang-analyzer-alpha.clone.CloneChecker,-google-runtime-int,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-clang-analyzer-alpha.deadcode.UnreachableCode,-misc-use-after-move,-cppcoreguidelines-pro-type-vararg,-modernize-use-emplace,-cert-err60-cpp,-modernize-use-trailing-return-type,-fuchsia-default-arguments-calls,-fuchsia-overloaded-operator,-readability-magic-numbers,-cppcoreguidelines-avoid-magic-numbers,-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,-readability-function-cognitive-complexity'
 # We only care about our code under 'src'
-HeaderFilterRegex: 'src((\\|\/)[a-zA-Z0-9]+)+\.(h|c)$'
+HeaderFilterRegex: 'src((\\|\/)[a-zA-Z0-9_]+)+\.(h|c)$'
+CheckOptions:
+  - { key: readability-identifier-naming.NamespaceCase,          value: lower_case }
+  - { key: readability-identifier-naming.StructCase,             value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase,           value: CamelCase }
+  - { key: readability-identifier-naming.FunctionIgnoredRegexp,  value: 'mem(cpy|set)' }
+  - { key: readability-identifier-naming.VariableCase,           value: CamelCase }
+  - { key: readability-identifier-naming.LocalVariableCase,      value: camelBack }
+  - { key: readability-identifier-naming.GlobalConstantCase,  	 value: UPPER_CASE }
+  - { key: readability-identifier-naming.TemplateParameterCase,  value: UPPER_CASE }
