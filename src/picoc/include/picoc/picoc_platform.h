@@ -70,6 +70,9 @@
 //! Disable unistd
 #undef PICOC_NO_UNISTD
 
+//! Store constants in RAM where possible
+#define PICOC_CONSTANTS_IN_RAM
+
 #define PICOC_INTERACTIVE_PROMPT_START "starting picoc " PICOC_VERSION " (Ctrl+D to exit)\n"
 #define PICOC_INTERACTIVE_PROMPT_STATEMENT "picoc> "
 #define PICOC_INTERACTIVE_PROMPT_LINE "     > "

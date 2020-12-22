@@ -1,341 +1,353 @@
-/*  */
+/**
+ * @brief errno implementation
+ * @details
+ * Errono variables are stored in a table by reference. For this reason,
+ * the defines must be captured as static values so we have an actual
+ * address to reference.
+ */
 #include "picoc/picoc_interpreter.h"
 
 #include <errno.h>
 
+#ifdef PICOC_CONSTANTS_IN_RAM
+#define PICOC_STORAGE_TYPE static
+#else
+#define PICOC_STORAGE_TYPE static const
+#endif
+
 #ifdef EACCES
-static int EACCESValue = EACCES;
+PICOC_STORAGE_TYPE int EACCESValue = EACCES;
 #endif
 
 #ifdef EADDRINUSE
-static int EADDRINUSEValue = EADDRINUSE;
+PICOC_STORAGE_TYPE int EADDRINUSEValue = EADDRINUSE;
 #endif
 
 #ifdef EADDRNOTAVAIL
-static int EADDRNOTAVAILValue = EADDRNOTAVAIL;
+PICOC_STORAGE_TYPE int EADDRNOTAVAILValue = EADDRNOTAVAIL;
 #endif
 
 #ifdef EAFNOSUPPORT
-static int EAFNOSUPPORTValue = EAFNOSUPPORT;
+PICOC_STORAGE_TYPE int EAFNOSUPPORTValue = EAFNOSUPPORT;
 #endif
 
 #ifdef EAGAIN
-static int EAGAINValue = EAGAIN;
+PICOC_STORAGE_TYPE int EAGAINValue = EAGAIN;
 #endif
 
 #ifdef EALREADY
-static int EALREADYValue = EALREADY;
+PICOC_STORAGE_TYPE int EALREADYValue = EALREADY;
 #endif
 
 #ifdef EBADF
-static int EBADFValue = EBADF;
+PICOC_STORAGE_TYPE int EBADFValue = EBADF;
 #endif
 
 #ifdef EBADMSG
-static int EBADMSGValue = EBADMSG;
+PICOC_STORAGE_TYPE int EBADMSGValue = EBADMSG;
 #endif
 
 #ifdef EBUSY
-static int EBUSYValue = EBUSY;
+PICOC_STORAGE_TYPE int EBUSYValue = EBUSY;
 #endif
 
 #ifdef ECANCELED
-static int ECANCELEDValue = ECANCELED;
+PICOC_STORAGE_TYPE int ECANCELEDValue = ECANCELED;
 #endif
 
 #ifdef ECHILD
-static int ECHILDValue = ECHILD;
+PICOC_STORAGE_TYPE int ECHILDValue = ECHILD;
 #endif
 
 #ifdef ECONNABORTED
-static int ECONNABORTEDValue = ECONNABORTED;
+PICOC_STORAGE_TYPE int ECONNABORTEDValue = ECONNABORTED;
 #endif
 
 #ifdef ECONNREFUSED
-static int ECONNREFUSEDValue = ECONNREFUSED;
+PICOC_STORAGE_TYPE int ECONNREFUSEDValue = ECONNREFUSED;
 #endif
 
 #ifdef ECONNRESET
-static int ECONNRESETValue = ECONNRESET;
+PICOC_STORAGE_TYPE int ECONNRESETValue = ECONNRESET;
 #endif
 
 #ifdef EDEADLK
-static int EDEADLKValue = EDEADLK;
+PICOC_STORAGE_TYPE int EDEADLKValue = EDEADLK;
 #endif
 
 #ifdef EDESTADDRREQ
-static int EDESTADDRREQValue = EDESTADDRREQ;
+PICOC_STORAGE_TYPE int EDESTADDRREQValue = EDESTADDRREQ;
 #endif
 
 #ifdef EDOM
 // https://developer.arm.com/documentation/ihi0039/e/?lang=en#errno-h
 #if defined(__ARM_EABI__)
-static int EDOMValue = 33;
+PICOC_STORAGE_TYPE int EDOMValue = 33;
 #else
-static int EDOMValue = EDOM;
+PICOC_STORAGE_TYPE int EDOMValue = EDOM;
 #endif
 #endif
 
 #ifdef EDQUOT
-static int EDQUOTValue = EDQUOT;
+PICOC_STORAGE_TYPE int EDQUOTValue = EDQUOT;
 #endif
 
 #ifdef EEXIST
-static int EEXISTValue = EEXIST;
+PICOC_STORAGE_TYPE int EEXISTValue = EEXIST;
 #endif
 
 #ifdef EFAULT
-static int EFAULTValue = EFAULT;
+PICOC_STORAGE_TYPE int EFAULTValue = EFAULT;
 #endif
 
 #ifdef EFBIG
-static int EFBIGValue = EFBIG;
+PICOC_STORAGE_TYPE int EFBIGValue = EFBIG;
 #endif
 
 #ifdef EHOSTUNREACH
-static int EHOSTUNREACHValue = EHOSTUNREACH;
+PICOC_STORAGE_TYPE int EHOSTUNREACHValue = EHOSTUNREACH;
 #endif
 
 #ifdef EIDRM
-static int EIDRMValue = EIDRM;
+PICOC_STORAGE_TYPE int EIDRMValue = EIDRM;
 #endif
 
 #ifdef EILSEQ
 // https://developer.arm.com/documentation/ihi0039/e/?lang=en#errno-h
 #if defined(__ARM_EABI__)
-static int EILSEQValue = 47;
+PICOC_STORAGE_TYPE int EILSEQValue = 47;
 #else
-static int EILSEQValue = EILSEQ;
+PICOC_STORAGE_TYPE int EILSEQValue = EILSEQ;
 #endif
 #endif
 
 #ifdef EINPROGRESS
-static int EINPROGRESSValue = EINPROGRESS;
+PICOC_STORAGE_TYPE int EINPROGRESSValue = EINPROGRESS;
 #endif
 
 #ifdef EINTR
-static int EINTRValue = EINTR;
+PICOC_STORAGE_TYPE int EINTRValue = EINTR;
 #endif
 
 #ifdef EINVAL
-static int EINVALValue = EINVAL;
+PICOC_STORAGE_TYPE int EINVALValue = EINVAL;
 #endif
 
 #ifdef EIO
-static int EIOValue = EIO;
+PICOC_STORAGE_TYPE int EIOValue = EIO;
 #endif
 
 #ifdef EISCONN
-static int EISCONNValue = EISCONN;
+PICOC_STORAGE_TYPE int EISCONNValue = EISCONN;
 #endif
 
 #ifdef EISDIR
-static int EISDIRValue = EISDIR;
+PICOC_STORAGE_TYPE int EISDIRValue = EISDIR;
 #endif
 
 #ifdef ELOOP
-static int ELOOPValue = ELOOP;
+PICOC_STORAGE_TYPE int ELOOPValue = ELOOP;
 #endif
 
 #ifdef EMFILE
-static int EMFILEValue = EMFILE;
+PICOC_STORAGE_TYPE int EMFILEValue = EMFILE;
 #endif
 
 #ifdef EMLINK
-static int EMLINKValue = EMLINK;
+PICOC_STORAGE_TYPE int EMLINKValue = EMLINK;
 #endif
 
 #ifdef EMSGSIZE
-static int EMSGSIZEValue = EMSGSIZE;
+PICOC_STORAGE_TYPE int EMSGSIZEValue = EMSGSIZE;
 #endif
 
 #ifdef EMULTIHOP
-static int EMULTIHOPValue = EMULTIHOP;
+PICOC_STORAGE_TYPE int EMULTIHOPValue = EMULTIHOP;
 #endif
 
 #ifdef ENAMETOOLONG
-static int ENAMETOOLONGValue = ENAMETOOLONG;
+PICOC_STORAGE_TYPE int ENAMETOOLONGValue = ENAMETOOLONG;
 #endif
 
 #ifdef ENETDOWN
-static int ENETDOWNValue = ENETDOWN;
+PICOC_STORAGE_TYPE int ENETDOWNValue = ENETDOWN;
 #endif
 
 #ifdef ENETRESET
-static int ENETRESETValue = ENETRESET;
+PICOC_STORAGE_TYPE int ENETRESETValue = ENETRESET;
 #endif
 
 #ifdef ENETUNREACH
-static int ENETUNREACHValue = ENETUNREACH;
+PICOC_STORAGE_TYPE int ENETUNREACHValue = ENETUNREACH;
 #endif
 
 #ifdef ENFILE
-static int ENFILEValue = ENFILE;
+PICOC_STORAGE_TYPE int ENFILEValue = ENFILE;
 #endif
 
 #ifdef ENOBUFS
-static int ENOBUFSValue = ENOBUFS;
+PICOC_STORAGE_TYPE int ENOBUFSValue = ENOBUFS;
 #endif
 
 #ifdef ENODATA
-static int ENODATAValue = ENODATA;
+PICOC_STORAGE_TYPE int ENODATAValue = ENODATA;
 #endif
 
 #ifdef ENODEV
-static int ENODEVValue = ENODEV;
+PICOC_STORAGE_TYPE int ENODEVValue = ENODEV;
 #endif
 
 #ifdef ENOENT
-static int ENOENTValue = ENOENT;
+PICOC_STORAGE_TYPE int ENOENTValue = ENOENT;
 #endif
 
 #ifdef ENOEXEC
-static int ENOEXECValue = ENOEXEC;
+PICOC_STORAGE_TYPE int ENOEXECValue = ENOEXEC;
 #endif
 
 #ifdef ENOLCK
-static int ENOLCKValue = ENOLCK;
+PICOC_STORAGE_TYPE int ENOLCKValue = ENOLCK;
 #endif
 
 #ifdef ENOLINK
-static int ENOLINKValue = ENOLINK;
+PICOC_STORAGE_TYPE int ENOLINKValue = ENOLINK;
 #endif
 
 #ifdef ENOMEM
-static int ENOMEMValue = ENOMEM;
+PICOC_STORAGE_TYPE int ENOMEMValue = ENOMEM;
 #endif
 
 #ifdef ENOMSG
-static int ENOMSGValue = ENOMSG;
+PICOC_STORAGE_TYPE int ENOMSGValue = ENOMSG;
 #endif
 
 #ifdef ENOPROTOOPT
-static int ENOPROTOOPTValue = ENOPROTOOPT;
+PICOC_STORAGE_TYPE int ENOPROTOOPTValue = ENOPROTOOPT;
 #endif
 
 #ifdef ENOSPC
-static int ENOSPCValue = ENOSPC;
+PICOC_STORAGE_TYPE int ENOSPCValue = ENOSPC;
 #endif
 
 #ifdef ENOSR
-static int ENOSRValue = ENOSR;
+PICOC_STORAGE_TYPE int ENOSRValue = ENOSR;
 #endif
 
 #ifdef ENOSTR
-static int ENOSTRValue = ENOSTR;
+PICOC_STORAGE_TYPE int ENOSTRValue = ENOSTR;
 #endif
 
 #ifdef ENOSYS
-static int ENOSYSValue = ENOSYS;
+PICOC_STORAGE_TYPE int ENOSYSValue = ENOSYS;
 #endif
 
 #ifdef ENOTCONN
-static int ENOTCONNValue = ENOTCONN;
+PICOC_STORAGE_TYPE int ENOTCONNValue = ENOTCONN;
 #endif
 
 #ifdef ENOTDIR
-static int ENOTDIRValue = ENOTDIR;
+PICOC_STORAGE_TYPE int ENOTDIRValue = ENOTDIR;
 #endif
 
 #ifdef ENOTEMPTY
-static int ENOTEMPTYValue = ENOTEMPTY;
+PICOC_STORAGE_TYPE int ENOTEMPTYValue = ENOTEMPTY;
 #endif
 
 #ifdef ENOTRECOVERABLE
-static int ENOTRECOVERABLEValue = ENOTRECOVERABLE;
+PICOC_STORAGE_TYPE int ENOTRECOVERABLEValue = ENOTRECOVERABLE;
 #endif
 
 #ifdef ENOTSOCK
-static int ENOTSOCKValue = ENOTSOCK;
+PICOC_STORAGE_TYPE int ENOTSOCKValue = ENOTSOCK;
 #endif
 
 #ifdef ENOTSUP
-static int ENOTSUPValue = ENOTSUP;
+PICOC_STORAGE_TYPE int ENOTSUPValue = ENOTSUP;
 #endif
 
 #ifdef ENOTTY
-static int ENOTTYValue = ENOTTY;
+PICOC_STORAGE_TYPE int ENOTTYValue = ENOTTY;
 #endif
 
 #ifdef ENXIO
-static int ENXIOValue = ENXIO;
+PICOC_STORAGE_TYPE int ENXIOValue = ENXIO;
 #endif
 
 #ifdef EOPNOTSUPP
-static int EOPNOTSUPPValue = EOPNOTSUPP;
+PICOC_STORAGE_TYPE int EOPNOTSUPPValue = EOPNOTSUPP;
 #endif
 
 #ifdef EOVERFLOW
-static int EOVERFLOWValue = EOVERFLOW;
+PICOC_STORAGE_TYPE int EOVERFLOWValue = EOVERFLOW;
 #endif
 
 #ifdef EOWNERDEAD
-static int EOWNERDEADValue = EOWNERDEAD;
+PICOC_STORAGE_TYPE int EOWNERDEADValue = EOWNERDEAD;
 #endif
 
 #ifdef EPERM
-static int EPERMValue = EPERM;
+PICOC_STORAGE_TYPE int EPERMValue = EPERM;
 #endif
 
 #ifdef EPIPE
-static int EPIPEValue = EPIPE;
+PICOC_STORAGE_TYPE int EPIPEValue = EPIPE;
 #endif
 
 #ifdef EPROTO
-static int EPROTOValue = EPROTO;
+PICOC_STORAGE_TYPE int EPROTOValue = EPROTO;
 #endif
 
 #ifdef EPROTONOSUPPORT
-static int EPROTONOSUPPORTValue = EPROTONOSUPPORT;
+PICOC_STORAGE_TYPE int EPROTONOSUPPORTValue = EPROTONOSUPPORT;
 #endif
 
 #ifdef EPROTOTYPE
-static int EPROTOTYPEValue = EPROTOTYPE;
+PICOC_STORAGE_TYPE int EPROTOTYPEValue = EPROTOTYPE;
 #endif
 
 #ifdef ERANGE
 // https://developer.arm.com/documentation/ihi0039/e/?lang=en#errno-h
 #if defined(__ARM_EABI__)
-static int ERANGEValue = 34;
+PICOC_STORAGE_TYPE int ERANGEValue = 34;
 #else
-static int ERANGEValue = ERANGE;
+PICOC_STORAGE_TYPE int ERANGEValue = ERANGE;
 #endif
 #endif
 
 #ifdef EROFS
-static int EROFSValue = EROFS;
+PICOC_STORAGE_TYPE int EROFSValue = EROFS;
 #endif
 
 #ifdef ESPIPE
-static int ESPIPEValue = ESPIPE;
+PICOC_STORAGE_TYPE int ESPIPEValue = ESPIPE;
 #endif
 
 #ifdef ESRCH
-static int ESRCHValue = ESRCH;
+PICOC_STORAGE_TYPE int ESRCHValue = ESRCH;
 #endif
 
 #ifdef ESTALE
-static int ESTALEValue = ESTALE;
+PICOC_STORAGE_TYPE int ESTALEValue = ESTALE;
 #endif
 
 #ifdef ETIME
-static int ETIMEValue = ETIME;
+PICOC_STORAGE_TYPE int ETIMEValue = ETIME;
 #endif
 
 #ifdef ETIMEDOUT
-static int ETIMEDOUTValue = ETIMEDOUT;
+PICOC_STORAGE_TYPE int ETIMEDOUTValue = ETIMEDOUT;
 #endif
 
 #ifdef ETXTBSY
-static int ETXTBSYValue = ETXTBSY;
+PICOC_STORAGE_TYPE int ETXTBSYValue = ETXTBSY;
 #endif
 
 #ifdef EWOULDBLOCK
-static int EWOULDBLOCKValue = EWOULDBLOCK;
+PICOC_STORAGE_TYPE int EWOULDBLOCKValue = EWOULDBLOCK;
 #endif
 
 #ifdef EXDEV
-static int EXDEVValue = EXDEV;
+PICOC_STORAGE_TYPE int EXDEVValue = EXDEV;
 #endif
 
 /* creates various system-dependent definitions */
