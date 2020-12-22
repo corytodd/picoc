@@ -16,9 +16,9 @@ typedef FILE IOFILE;
  * @brief Input and Output buffers
  */
 typedef struct {
-  IOFILE* pStdout; ///< Receives output
-  IOFILE* pStdin;  ///< Receives input
-  IOFILE* pStderr; ///< Receives error outpout
+    IOFILE* pStdout; ///< Receives output
+    IOFILE* pStdin;  ///< Receives input
+    IOFILE* pStderr; ///< Receives error outpout
 } picoc_io_t;
 
 #ifdef __cplusplus
