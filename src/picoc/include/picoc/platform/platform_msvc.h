@@ -5,19 +5,18 @@
  */
 #pragma once
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-
-#include <ctype.h>
 #include <assert.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdarg.h>
-#include <setjmp.h>
+#include <ctype.h>
 #include <math.h>
+#include <setjmp.h>
+#include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #define PICOC_FN_MALLOC malloc
 #define PICOC_FN_CALLOC calloc
